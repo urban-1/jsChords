@@ -41,6 +41,7 @@ table.c_guitar_diagram {
     max-width: 1.1em;
     height: 25px;
     overflow: visible;
+    border:0px
 }
 
 .c_guitar_diagram .c_openclose {
