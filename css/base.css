@@ -31,6 +31,10 @@ body {
  *  Guitar/Strings ==========================================
  */
 table.c_guitar_diagram {
+    margin: 0; padding: 0; border: 0; outline: none; 
+}
+
+table.c_guitar_diagram {
 /*     border: 1px solid black; */
     table-layout:fixed;
     border-spacing: 0px;
