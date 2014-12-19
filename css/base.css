@@ -34,7 +34,7 @@ body {
 /*
  *  Guitar/Strings ==========================================
  */
-table.c_guitar_diagram {
+table.c_guitar_diagram * {
     margin: 0; 
     padding: 0; 
     border: 0; 
@@ -52,9 +52,8 @@ table.c_guitar_diagram {
     padding: 0;
     outline: none;
     margin: 0; 
-    width: 20px;
-    max-width: 1.1em;
-    height: 25px;
+    min-width: 18px;
+    height: 28px;
     overflow: visible;
 }
 
@@ -99,7 +98,7 @@ table.c_guitar_diagram {
     border-top: 1px solid black;
 }
 
-.guitardot {
+table.c_guitar_diagram .guitardot {
     border-radius:50%;
     background-color: darkblue;
     width: 15px;
@@ -116,7 +115,7 @@ table.c_guitar_diagram {
     line-height: 15px;
 }
 
-.guitardot.root{
+table.c_guitar_diagram .guitardot.root{
     background-color: darkred;
 }
 
