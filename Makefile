@@ -21,7 +21,7 @@ all: jschords
 	
 
 jschords: $(JSFILES) $(GUIFILES) $(INSTRUMENTS)
-	cat $^ > jschords.js
+	cat $^ > jschords-src.js
 
 # Auto build, echo . to sterr if you need feedback...
 auto: 
