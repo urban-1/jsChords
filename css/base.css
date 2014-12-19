@@ -11,6 +11,10 @@ body {
 
 .c_chord_info {
     font-size:12px;
+    margin: 0; 
+    padding: 0; 
+    border: 0; 
+    outline: none; 
 }
 
 .c_chord_info .c {
@@ -34,7 +38,7 @@ table.c_guitar_diagram {
     margin: 0; 
     padding: 0; 
     border: 0; 
-    outline: none; 
+    outline: none;
 }
 
 table.c_guitar_diagram {
@@ -44,11 +48,14 @@ table.c_guitar_diagram {
 }
 
 .c_guitar_diagram td {
+    border:0px;
+    padding: 0;
+    outline: none;
+    margin: 0; 
     width: 20px;
     max-width: 1.1em;
     height: 25px;
     overflow: visible;
-    border:0px
 }
 
 .c_guitar_diagram .c_openclose {
