@@ -11,10 +11,10 @@ body {
 
 .c_chord_info, .c_guitar_diagram td{
     font-size:12px;
-    margin: 0; 
-    padding: 0; 
-    border: 0; 
-    outline: none; 
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: none;
 }
 
 .c_chord_info .c {
