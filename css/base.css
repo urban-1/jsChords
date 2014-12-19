@@ -9,7 +9,7 @@ body {
   font-family: Arial;
 }
 
-.c_chord_info {
+.c_chord_info, .c_guitar_diagram td{
     font-size:12px;
     margin: 0; 
     padding: 0; 
