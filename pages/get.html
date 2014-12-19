@@ -1,0 +1,200 @@
+ 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+    <title>Chords tester</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type='text/javascript' src='../jschords-src.js'></script>
+    <link rel="stylesheet" type="text/css" href="../css/base.css" />
+    
+    
+
+    <script type='text/javascript'>
+	var inst,chord;
+	function updateCount(){
+	    var i = inst.getPosIdx()+1;
+	    var tot = inst.getNumPos();
+	    C.DomUtil.get("count").innerText = i+"/"+tot;
+	}
+	
+	function updateInfo() {
+	    var div = C.DomUtil.get('info');
+	    C.DomUtil.empty(div);
+	    
+	    var c = C.DomUtil.create;
+	    var nfo = c("table","c_chord_info",div);
+	    
+	    var r = c("tr", "", nfo);
+	    c("td", "", r).textContent = "Name: ";
+	    c("td", "c", r).textContent = chord.toString();
+	    
+	    var r = c("tr", "", nfo);
+	    c("td", "", r).textContent = "Full Name: ";
+	    c("td", "c", r).textContent = chord.getFullName();
+	    
+	    var r = c("tr", "", nfo);
+	    c("td", "", r).textContent = "Formula: ";
+	    c("td", "c", r).textContent = chord.getFormula();
+	    
+	    var r = c("tr", "", nfo);
+	    c("td", "", r).textContent = "Notes: ";
+	    c("td", "c", r).innerHTML = chord.getNotes().join(' ') + "<br/>("+chord.getNotesIoanna().join(' ')+")";
+	}
+	
+	function showInfo(chord){
+	    var div = C.DomUtil.get('info');
+	    
+	    if (div.style.display!="none") {
+		div.style.display = "none";
+		return;
+	    }
+	    
+	    if (div.innerHTML=="") {
+		updateInfo();
+	    }
+	    
+	    div.style.display = "inline-block";
+	    
+	}
+	
+	function showMore(){
+	    var div = C.DomUtil.get('more');
+	    if (div.style.display!="none") {
+		div.style.display = "none";
+	    }else{
+		div.style.display = "inline-block";
+		C.DomUtil.setSelectedByValue('allNotes',chord.getRoot());
+		C.DomUtil.setSelectedByValue('allTypes',chord.getType());
+	    }
+	}
+	
+	function initSelects(){
+	    var s1 = C.DomUtil.get('allNotes');
+	    var s2 = C.DomUtil.get('allTypes');
+	    
+	    for (var i=0; i<C.NOTES.length; i++){
+		var o=C.DomUtil.create('option','',s1);
+		o.setAttribute("value",C.NOTES[i]);
+		o.innerText = C.NOTES[i];
+	    }
+	    
+	    for (v in C.Chord.TYPES){
+		if (!C.Chord.TYPES.hasOwnProperty(v)) continue;
+		var o=C.DomUtil.create('option','',s2);
+		o.setAttribute("value",v);
+		o.innerText = C.Chord.TYPES[v].type;
+	    }
+	}
+	
+	function onLoad()
+	{
+	    initSelects();
+	}
+	
+	function onSelChange(){
+	    var s1=C.DomUtil.get('allNotes')
+	    var s2=C.DomUtil.get('allTypes')
+	    
+	    s1.disabled=true;
+	    s2.disabled=true;
+	    
+	    window.history.pushState("", "", window.location.href.replace(/chord=[^&]+/,"chord="+s1.value+escape(s2.value)));
+	    
+	    chord.setRoot(s1.value);
+	    chord.setType(s2.value);
+	    
+	    C.DomUtil.empty(C.DomUtil.get('diagram'))
+	    inst.mapChord(chord);
+	    inst.diagram(0,C.DomUtil.get('diagram'),{});
+	    
+	    s1.disabled=false;
+	    s2.disabled=false;
+	    updateCount();
+	    updateInfo();
+	    
+	}
+	
+    </script>
+    <style>
+	@-viewport {
+	    width: 240px;
+	}
+	.c_controls {
+	    font-size: 15px;
+	}
+	
+	.c_controls .b{
+	    font-weight: bold;
+	    cursor: pointer;
+	}
+	
+	.prev {
+	    margin-left:25px;
+	}
+	
+	select {
+	    height:150px;
+	    padding-right: 4px;
+	}
+	
+
+    </style>
+</head>
+<body onload='onLoad();'> 
+    <div id='diagram' style="display:inline-block"></div>
+    <div id='info'    style="display:none"></div>
+    
+    <div style="display:none;margin-left:15px;" id='more'>
+	<select id='allNotes' multiple="multiple" onchange="onSelChange();"></select>
+	<select id='allTypes' multiple="multiple" onchange="onSelChange();"></select>
+    </div>
+    
+    <br/>
+    <div class='c_controls noselect'>
+	<span class='prev b' onclick='inst.diagramPrev();updateCount()'>&lt;</span>
+	<span id="count"></span>
+	<span class='next b' onclick='inst.diagramNext();updateCount()'>&gt;</span>
+	<span class='shInfo b' onclick='showInfo(chord)'>?</span>
+	<span class='shMore b' onclick='showMore()'>!</span>
+    </div>
+    <script type='text/javascript'>
+	
+	var qString = C.Util.getQueryString();
+	var pos = (qString.pos!==undefined) ? parseInt(qString.pos)-1 : 0;
+	var inst = qString.inst;
+	var cname = qString.chord;
+	chord = C.Chord.byString(cname)
+	
+	
+	
+	
+	switch (inst) {
+	    case "Guitar":
+		inst = new C.Guitar();
+		break;
+	    case "Bazooka":
+		inst = new C.Bazooka();
+		break;
+	    case "Bazooka4":
+		inst = new C.Bazooka({strings:["G","D","A","E"], maxFretSpan: 4});
+		break;
+	    case "Piano":
+		inst = new C.Piano();
+		break;
+	    default:
+		
+	}
+	
+	
+	lg(chord+", position="+pos+" on "+inst.getName());
+	inst.mapChord(chord);
+	inst.diagram(pos,C.DomUtil.get('diagram'),{});
+	updateCount();
+	
+    </script>
+</body> 
+</html> 

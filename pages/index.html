@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+    <title>Chords tester</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type='text/javascript' src='../jschords-src.js'></script>
+    <link rel="stylesheet" type="text/css" href="../css/base.css" />
+<!--     <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script> -->
+    
+    
+
+</head>
+<body> 
+    <div id='diagram'    style="display:inline-block"></div>
+    <div id='diagram2'   style="display:inline-block"></div>
+    <div id='diagram3'   style="display:inline-block"></div>
+    <div id='diagram4'   style="display:inline-block"></div>
+    
+    <script type='text/javascript'>
+	// Assert/Print
+	function AP(a,b){
+	    var str = a+", expected: "+b
+	    if (a===b) pt(str + " = PASS");
+	    else pt(str + " = FAIL");
+	}
+	
+	// Print tabbed
+	function pt(msg){
+	    lg("   - "+msg);
+	}
+	
+// 	// -------- NOTE TESTS ----------------
+// 	//  Default constructor
+// 	lg (" * Note tests *");
+// 	var note = new C.Note();
+// 	AP(note.toString(),"C");
+// 	//  + Offset
+// 	note.offset(+1,2);
+// 	AP(note.toString(),"D")
+// 	note.offset(+1);
+// 	AP(note.toString(),"D#")
+// 	//  - Offset
+// 	note.offset(-1,2);
+// 	AP(note.toString(),"C#")
+// 	note.offset(-1);
+// 	AP(note.toString(),"C")
+// 	
+// 	// -------- Chord Tests ----------------
+// 	//  Default constructor
+// 	lg (" * Chord tests *");
+// 	var chord = new C.Chord({type: "m7"});
+// 	AP(chord.toString(),"Cm7");
+// 	//  + Offset
+// 	chord.offset(+1,2);
+// 	AP(chord.toString(),"Dm7")
+// 	chord.offset(+1);
+// 	AP(chord.toString(),"D#m7")
+// 	//  - Offset
+// 	chord.offset(-1,2);
+// 	AP(chord.toString(),"C#m7")
+// 	chord.offset(-1);
+// 	AP(chord.toString(),"Cm7")
+// 	
+// 	
+// 	// -------- Formula Tests ----------------
+// 	lg (" * Formula tests *");
+// 	AP(chord._formulaToIdx("1"),0)
+// 	AP(chord._formulaToIdx("#1"),1)
+// 	AP(chord._formulaToIdx("b2"),1)
+// 	
+// 	//  ( index tests...)
+// 	AP((new C.Note({note: C.Note.indexNote(chord._formulaToIdx("b2"))})).toString(), "C#")
+// 	AP((new C.Note.byIdx(chord._formulaToIdx("b2"))).toString(), "C#")
+// 	AP(chord._formulaToNote("b2").toString(), "C#")
+// 	
+// 	// back to formula/chords
+// 	lg (" * Formula/Chords tests *");
+// 	AP(chord.getFormula(), "1 b3 5 b7")
+	
+	
+	
+
+	
+	///// PLOTTING + Chord/Instrument mapping
+	
+	chord = new C.Chord({root:"A", type:"5"});
+	lg(chord.getFormula())
+	
+	
+	var g = new C.Guitar();
+	g.mapChord(chord);
+	g.diagram(0,C.DomUtil.get('diagram'),{});
+	
+	var b1 = new C.Bazooka();
+	b1.mapChord(chord);
+	b1.diagram(0,C.DomUtil.get('diagram2'),{});
+	
+	var b2 = new C.Bazooka({strings:["G","D","A","E"], maxFretSpan: 4});
+	b2.mapChord(chord);
+	b2.diagram(0,C.DomUtil.get('diagram3'),{});
+	
+	var p = new C.Piano();
+	p.mapChord(chord);
+	p.diagram(0,C.DomUtil.get('diagram4'),{});
+	
+	
+	var pos = 0;
+	var dir = 1;
+	function shiftPos(){
+	    if (pos == g.getNumPos()-1) dir=-1
+	    else if (pos == 0) dir=1
+		
+	    if (dir==1) {
+		g.diagramNext();
+		b1.diagramNext();
+		b2.diagramNext();
+		p.diagramNext();
+		pos++;
+	    }
+	    else {
+		g.diagramPrev();
+		b1.diagramPrev();
+		b2.diagramPrev();
+		p.diagramPrev();
+		pos--;
+	    }
+	}
+	
+// 	setInterval(shiftPos,1000);
+	
+	
+    </script>
+</body> 
+</html> 

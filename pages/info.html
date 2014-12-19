@@ -1,0 +1,24 @@
+
+<script type='text/javascript' src='../jschords-src.js'></script>
+<script>
+    var qString = C.Util.getQueryString();
+    var cname = qString.chord;
+    var c = C.Chord.byString(cname)
+    
+    var info = {
+	name: c.toString(),
+	fullname: c.getFullName(),
+	formula: c.getFormula(),
+	notes: c.getNotes().join(' ')
+    };
+    
+    var str = JSON.stringify(info);
+// 	document.body.innerText = JSON.stringify(info);
+document.write(str);
+
+// window=window.open();
+// newdocument=newwindow.document;
+// newdocument.write(str);
+// newdocument.close();
+
+</script>

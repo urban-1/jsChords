@@ -1,0 +1,183 @@
+/**, *:before, *:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}*/
+
+
+body {
+  font-family: Arial;
+}
+
+.c_chord_info {
+    font-size:12px;
+}
+
+.c_chord_info .c {
+    font-weight:bold;
+}
+
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+/*
+ *  Guitar/Strings ==========================================
+ */
+table.c_guitar_diagram {
+/*     border: 1px solid black; */
+    table-layout:fixed;
+    border-spacing: 0px;
+}
+
+.c_guitar_diagram td {
+    width: 20px;
+    max-width: 1.1em;
+    height: 25px;
+    overflow: visible;
+}
+
+.c_guitar_diagram .c_openclose {
+    height: 12px;
+    font-size: 14px;
+}
+
+.c_guitar_diagram .c_openclose span{
+    padding-left: 16px;
+    margin-top: -10px;
+    position:absolute;
+}
+
+.c_guitar_diagram .c_openclose span.root{
+    color: darkred;
+    font-weight:bold;
+}
+
+.c_guitar_diagram .c_fretstart {
+    border-bottom: 3px solid black;
+}
+
+
+.c_guitar_diagram .c_fret_cell {
+    border-right: 1px solid black;
+    border-bottom: 1px solid #666;
+    height: 1.4em;
+}
+
+.c_guitar_diagram .c_fret_cell_1st {
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+    height: 1.4em;
+}
+
+.c_guitar_diagram .c_fret_cell_bottom {
+    border-bottom: 1px solid black;
+}
+
+.c_guitar_diagram .c_fret_cell_top {
+    border-top: 1px solid black;
+}
+
+.guitardot {
+    border-radius:50%;
+    background-color: darkblue;
+    width: 15px;
+    height: 15px;
+    margin-left: 12px;
+    margin-top: 18px;
+    position:absolute;
+    
+    color: white;
+    font-size:10px;
+    font-weight:bold;
+    vertical-align: bottom;
+    text-align: center;
+    line-height: 15px;
+}
+
+.guitardot.root{
+    background-color: darkred;
+}
+
+td.c_chord_title {
+    font-weight: bold;
+    text-align: center;
+    width: 5.5em;
+}
+
+
+
+/*
+ *  PIANO ==========================================
+ */
+table.c_piano_diagram {
+    table-layout:fixed;
+    border-spacing: 0px;
+}
+
+.c_piano_diagram .c_piano_cell {
+    width: 8px;
+    max-width: 10px;
+    height: 20px;
+    overflow: visible;
+    text-align:center;
+    border-bottom: 1px solid black;
+}
+
+.c_piano_diagram .c_piano_cell_top {
+    height: 30px;
+    border-top: 1px solid black;
+}
+
+
+.c_piano_diagram .c_piano_cell_sharp {
+    background-color:black;
+}
+
+.c_piano_diagram .c_piano_cell_border {
+    border-right: 1px solid black;
+}
+
+.c_piano_diagram .c_piano_cell_first {
+     border-left: 1px solid black; 
+}
+
+div.vertical-line{
+  width: 1px; /* Line width */
+  background-color: black; /* Line color */
+  height: 111%; /* Override in-line if you want specific height. */
+  margin-left: 4px;
+}
+
+.pianodot {
+    border-radius:50%;
+    background-color: darkblue;
+    width: 8px;
+    height: 8px;
+    margin-top: 25px;
+    position:absolute;
+}
+
+.pianodot_up {
+    border-radius:50%;
+    background-color: yellow;
+    width: 8px;
+    height: 8px;
+/*     margin-top: 25px; */
+    position:absolute;
+}
+
+.pianodot.root {
+    background-color: darkred;
+}
+
+.pianodot_up.root {
+    background-color: red;
+}
+
