@@ -11,10 +11,14 @@ Additionally, requires no server setup and can run in "offline" mode on any devi
 with a browser (in theory at least). Server-side implementation may be provided in 
 the future (TeaJS, nodejs?)
 
+Visit [Am demo page!](http://urban-1.github.io/jsChords/demo.html?chord=Am&inst=Guitar) to see
+what is possible atm.
+
 ## Usage
 
 For use in another website just download jschords-src.js and include it. Optionally,
 maybe a good idea to use a minifier/compiler of your choice to compress the library.
+Code examples [here](http://urban-1.github.io/jsChords/) (the demo code)
 
 ## Editing and rebuilding
 
