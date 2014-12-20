@@ -49,11 +49,13 @@
         <p>
 	    1. Parse parameters
 
-<pre>
+<pre lang="javascript">
+<code>
 var qString = C.Util.getQueryString();
 var pos = (qString.pos!==undefined) ? parseInt(qString.pos)-1 : 0;
 var inst = qString.inst;
 var cname = qString.chord;
+</code>
 </pre>
         </p>
         
@@ -69,7 +71,7 @@ switch (inst) {
     case "Bazooka":
 	inst = new C.Bazooka();
 	break;
-    case "Bazooka4":
+    case "Bazooka4": // Let's change a bit the tuning and strings
 	inst = new C.Bazooka({strings:["G","D","A","E"], maxFretSpan: 4});
 	break;
     case "Piano":
