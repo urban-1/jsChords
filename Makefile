@@ -32,7 +32,7 @@ auto:
 		echo -n "." >&2 ;\
 	done
 	
-js: ./src/
+doc: ./src/
 	-rm -r ./doc/html
 	-mkdir -p ./doc/html
 	jsduck -o ./doc/html $^ 

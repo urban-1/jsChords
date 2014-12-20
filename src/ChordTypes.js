@@ -7,7 +7,7 @@
  * @static
  * @member C.Chord
  */
-C.Chord.TYPES	= [];
+C.Chord.TYPES	= new Array(47);
 
 C.Chord.TYPES["M"]	= { type: "M",		formula: "1 3 5",	name: "Major" };
 C.Chord.TYPES["m"]	= { type: "m",		formula: "1 b3 5",	name: "Minor" };

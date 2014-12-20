@@ -41,6 +41,10 @@ C.NOTES2  = ["C", "D", "E", "F", "G", "A", "B"];
  * All notes (in semi-tones)
  */
 C.NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+/**
+ * Notes with different naming...
+ */
 C.NOTESIoanna = ["Do", "Do+", "Re", "Re+", "Mi", "Fa", "Fa+", "Sol", "Sol+", "La", "La+", "Si"];
 
 
