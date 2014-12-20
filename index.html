@@ -35,13 +35,89 @@
         <p>
           You can see <a href='demo.html?chord=Am&inst=Guitar' target="_blank">Am demo on guitar</a> or you might as well see it on a bouzouki (traditional 3-String) <a href='demo.html?chord=Am&inst=Bazooka' target="_blank">here</a>. However, you might also like this on a <a href='demo.html?chord=Am&inst=Piano' target="_blank">piano</a> or a 4-String <a href='demo.html?chord=Am&inst=Bazooka4' target="_blank">bouzouki</a> (GDAE)... Or anything else with strings!
         </p>
+        
         <h3>Hmmm TODO: Write a bit more stuff and ...</h3>
-
-	<h3>Give code examples</h3>
-    
-	<h3>Or show how to define a new instrument,</h3>
 	
 	<h3>Propose other uses (ie local download and mobile)</h3>
+
+	<h3>Give code examples</h3>
+        
+        <p>
+        Curious about how the demo works? Well... it is simple, 10 lines of code:
+        </p>
+        
+        <p>
+	    1. Parse parameters
+
+<pre>
+var qString = C.Util.getQueryString();
+var pos = (qString.pos!==undefined) ? parseInt(qString.pos)-1 : 0;
+var inst = qString.inst;
+var cname = qString.chord;
+</pre>
+        </p>
+        
+        <p>
+        2. Create the correct instrument and chord!
+<pre>
+chord = C.Chord.byString(cname)
+
+switch (inst) {
+    case "Guitar":
+	inst = new C.Guitar();
+	break;
+    case "Bazooka":
+	inst = new C.Bazooka();
+	break;
+    case "Bazooka4":
+	inst = new C.Bazooka({strings:["G","D","A","E"], maxFretSpan: 4});
+	break;
+    case "Piano":
+	inst = new C.Piano();
+	break;
+    default:
+}
+</pre>
+        </p>
+	
+	<p>
+	3. and finally, plot it:
+<pre>
+inst.mapChord(chord);
+inst.diagram(pos,C.DomUtil.get('diagram'),{});
+updateCount();
+</pre>
+        </p>
+	
+    <p>
+    Well, few more things may be going on but are all for the GUI and nothing complicated, example:
+<pre>
+    function onSelChange(){
+	var s1=C.DomUtil.get('allNotes')
+	var s2=C.DomUtil.get('allTypes')
+	
+	s1.disabled=true;
+	s2.disabled=true;
+	
+	window.history.pushState("", "", 
+	    window.location.href.replace(/chord=[^&]+/,
+			"chord="+escape(s1.value)+escape(s2.value)));
+	
+	chord.setRoot(s1.value);
+	chord.setType(s2.value);
+	
+	C.DomUtil.empty(C.DomUtil.get('diagram'))
+	inst.mapChord(chord);
+	inst.diagram(0,C.DomUtil.get('diagram'),{});
+	
+	s1.disabled=false;
+	s2.disabled=false;
+	updateCount();
+	updateInfo();
+    }
+</pre>
+    </p>
+	<h3>Or show how to define a new instrument,</h3>
 	
 	<h3>... and maybe conclude in technical docs!</h3>
 
