@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+
+//-------------------------------
+// General Utilities
+//-------------------------------
+
+<span id='C-Util'>/**
+</span> * Utilities class for chords. This is for general utils and should not depend on
+ * any other class
+ * 
+ * @class C.Util
+ */
+C.Util = {
+<span id='C-Util-method-extend'>    // extend an object with properties of one or more other objects
+</span>    extend: function (dest) {
+	var i, j, len, src;
+	
+	for (j = 1, len = arguments.length; j &lt; len; j++) {
+	    src = arguments[j];
+	    for (i in src) {
+		dest[i] = src[i];
+	    }
+	}
+	return dest;
+    },
+    
+<span id='C-Util-property-create'>    // create an object from a given prototype
+</span>    create: Object.create || (function () {
+	function F() {}
+	return function (proto) {
+	    F.prototype = proto;
+	    return new F();
+	};
+    })(),
+    
+<span id='C-Util-method-setOptions'>    /**
+</span>     * set options to an object, inheriting parent's options as well
+     */
+    setOptions: function (obj, options) {
+	if (!obj.hasOwnProperty('options')) {
+		obj.options = obj.options ? C.Util.create(obj.options) : {};
+	}
+	for (var i in options) {
+		obj.options[i] = options[i];
+	}
+	return obj.options;
+    },
+    
+    
+<span id='C-Util-method-objNull'>    objNull: function(obj, key){
+</span>	return (C.Util.objValue(obj,key,undefined)===undefined)
+    },
+    
+<span id='C-Util-method-objValue'>    objValue: function(obj, key, defVal){
+</span>	if (!obj) return defVal;
+	var keys = key.split(&quot;.&quot;), value;
+	for(var i = 0; i &lt; keys.length; i++){
+	    if(typeof obj[keys[i]] !== &quot;undefined&quot;){
+		value = obj = obj[keys[i]];
+	    }else{
+		return defVal;
+	    }
+	}
+	return value;
+    },
+    
+<span id='C-Util-method-objIsEmpty'>    objIsEmpty: function(obj){
+</span>	for(var key in obj) {
+	    if(obj.hasOwnProperty(key)) return false;
+	}
+	
+	return true;
+    },
+    
+<span id='C-Util-method-trim'>    // trim whitespace from both sides of a string
+</span>    trim: function (str) {
+	return str.trim ? str.trim() : str.replace(/^\s+|\s+$/g, '');
+    },
+    
+<span id='C-Util-method-splitWords'>    // split a string into words
+</span>    splitWords: function (str) {
+	return C.Util.trim(str).split(/\s+/);
+    },
+    
+<span id='C-Util-method-clone'>    /**
+</span>     * Clone an object instead of pointing to it!
+     */
+    clone: function(o) {
+	if(typeof(o) != 'object' || o == null) return o;
+	
+	var newO = new Object();
+	if (Object.prototype.toString.call( o ) === '[object Array]' ) 
+	    newO = new Array();
+	
+	for(var i in o) {
+	    // Detect dom ones
+	    
+	    if (o[&quot;map&quot;] == o[i]){
+		newO[i] = o[i];
+	    }else if (o[i].parentNode == undefined){
+		newO[i] = clone(o[i]);
+	    }else{
+		newO[i] = o[i].cloneNode(false);
+	    }
+	}
+	return newO;
+    },
+    
+<span id='C-Util-static-method-getQueryString'>    /**
+</span>     * Parse the URL query string and return it as object
+     * @static
+     */
+    getQueryString: function() {
+	var query_string = {};
+	var query = window.location.search.substring(1);
+	var vars = query.split(&quot;&amp;&quot;);
+	
+	for (var i=0;i&lt;vars.length;i++) {
+	    var pair = vars[i].split(&quot;=&quot;);
+	    // If first entry with this name
+	    var p1 = decodeURIComponent(pair[1]);
+	    if (typeof query_string[pair[0]] === &quot;undefined&quot;) {
+		if (pair[0]==&quot;&quot;) continue;
+		query_string[pair[0]] = p1;
+		// If second entry with this name
+	    } else if (typeof query_string[pair[0]] === &quot;string&quot;) {
+		var arr = [ query_string[pair[0]], p1];
+		query_string[pair[0]] = arr;
+		// If third or later entry with this name
+	    } else {
+		query_string[pair[0]].push(p1);
+	    }
+	} 
+	return query_string;
+    }
+
+    
+
+}
+
+
+<span id='C-Util-static-method-setOptions'>/**
+</span> * Alias to C.Util.setOptions
+ * @method setOptions
+ * @static
+ */
+C.setOptions = C.Util.setOptions;
+<span id='C-Util-static-method-extend'>/**
+</span> * Alias to C.Util.extend
+ * @method extend
+ * @static
+ */
+C.extend     = C.Util.extend;
+ 
+
+<span id='Array'>/**
+</span> * @class Array
+ */
+
+<span id='Array-method-max'>/**
+</span> * Get max out of array
+ * @return {Number}
+ */
+Array.prototype.max = function() {
+  return Math.max.apply(null, this);
+};
+
+<span id='Array-method-min'>/**
+</span> * Get min out of array
+ * @return {Number}
+ */
+Array.prototype.min = function() {
+  return Math.min.apply(null, this);
+};
+
+<span id='Array-method-mingt'>/**
+</span> * Find min graeater than gt
+ * @return {Number}
+ */
+Array.prototype.mingt = function(gt){
+    var min = 1000000000;
+    for(var i=0;i&lt;this.length;i++){
+	if(this[i] &lt; min &amp;&amp; this[i] &gt; gt)
+	    min=this[i];
+    }
+    return min;
+};
+
+<span id='Array-method-sortn'>/**
+</span> * Sort numerically
+ * @return {Array}
+ */
+Array.prototype.sortn = function(){
+    return this.sort(function(a,b){return a-b});
+};
+
+<span id='Array-method-hasItem'>/**
+</span> * Return true if item is found in the array
+ * @return {Boolean}
+ */
+Array.prototype.hasItem = function(item){
+    return (this.indexOf(item)!==-1);
+};
+
+<span id='Array-method-unique'>/**
+</span> * Return new array with duplicate values removed
+ * @return {Array}
+ */
+Array.prototype.unique = function() {
+    var a = [];
+    var l = this.length;
+    for(var i=0; i&lt;l; i++) {
+	for(var j=i+1; j&lt;l; j++) {
+	    // If this[i] is found later in the array
+	    if (this[i] === this[j])
+		j = ++i;
+	}
+	a.push(this[i]);
+    }
+    return a;
+};
+
+<span id='Array-method-uniquegt'>/**
+</span> * Return new array with duplicate values removed and
+ * values that are greater than gt
+ * @return {Array}
+ */
+Array.prototype.uniquegt = function(gt) {
+    var a = [];
+    var l = this.length;
+    for(var i=0; i&lt;l; i++) {
+	if (this[i]&lt;=gt) continue;
+	for(var j=i+1; j&lt;l; j++) {
+	    // If this[i] is found later in the array
+	    if (this[i] === this[j])
+		j = ++i;
+	}
+	a.push(this[i]);
+    }
+    return a;
+};
+
+<span id='Array-method-countWhat'>/**
+</span> * Find count of &quot;what&quot; in the array (uses ==, only 
+ * primitives...)
+ * @return {Number}
+ */
+Array.prototype.countWhat = function(what){
+    var c = 0;
+    for(var i=0;i&lt;this.length;i++){
+	if(this[i] === what)
+	    c++;
+    }
+    return c;
+};
+
+
+</pre>
+</body>
+</html>

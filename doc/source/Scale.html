@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='C-Scale'>/**
+</span> * Basic Scale class
+ * 
+ * @class C.Scale
+ * @extends C.Class
+ */
+C.Scale = C.Class.extend({
+    options: {
+	root: &quot;C&quot;,
+	type: &quot;Major&quot;
+    },
+    
+    initialize: function (options) {
+	C.setOptions(this, options);
+    },
+    
+    // 1. Create a note (root)
+    // 2. Return the scaled/offseted note
+    offset: function(f){
+	// Check for optional 1st
+	if (f[0]==&quot;(&quot;) {
+	    f = f.substring(1,f.length-1);
+	}
+	
+	var off = 0;
+	if (f[0]==&quot;b&quot;) {
+	    f = parseInt(f.substring(1));
+	    off=-1;
+	}
+	else if (f[0]==&quot;#&quot;){
+	    f = parseInt(f.substring(1));
+	    off=1;
+	}
+	
+	var sc = C.Scale.TYPES[this.options.type];
+	
+	// Loop offset! 9ths/11ths
+	var oo = false;
+	if (f&gt;sc.length) {
+	    f=f%sc.length;
+	    oo=true;
+	}
+	
+	
+	for (var i=0; (i&lt;sc.length &amp;&amp; i&lt;f-1); i++) {
+	    off+=sc[i]*2;
+	}
+	
+	var n = new C.Note({note: this.options.root,octaveOffset: oo});
+	return n.offset(off);
+    }
+});
+
+
+
+</pre>
+</body>
+</html>

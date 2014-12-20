@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='IRenderer'>/**
+</span> * Basic Renderer Interface
+ * @class IRenderer
+ */
+C.IRenderer = C.Class.extend({
+    options: {
+	type: &quot;abstract&quot;
+    },
+    
+    initialize: function (options) {
+	C.setOptions(this, options);
+    }
+})
+
+C.IRenderer.byType = function(opts){
+    var t = C.Util.objValue(opts, &quot;type&quot;, &quot;html&quot;);
+    
+    switch (t) {
+	case &quot;html&quot;:
+	    return new C.RendererHtml(opts);
+	default:
+	    throw new Error({'C.IRenderer':'Renderer &quot;'+t+'&quot; is not known...'}) 
+    }
+}
+</pre>
+</body>
+</html>

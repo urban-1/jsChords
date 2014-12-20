@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='C-Chord-TYPES'>/**
+</span> * Full credit to: http://guitarchordsworld.com/chord theory
+ * and http://www.smithfowler.org/music/Chord_Formulas.htm
+ * 
+ * Total: 47
+ * 
+ * @static
+ * @member C.Chord
+ */
+C.Chord.TYPES	= new Array(47);
+
+C.Chord.TYPES[&quot;M&quot;]	= { type: &quot;M&quot;,		formula: &quot;1 3 5&quot;,	name: &quot;Major&quot; };
+C.Chord.TYPES[&quot;m&quot;]	= { type: &quot;m&quot;,		formula: &quot;1 b3 5&quot;,	name: &quot;Minor&quot; };
+C.Chord.TYPES[&quot;7&quot;]	= { type: &quot;7&quot;,		formula: &quot;1 3 5 b7&quot;,	name: &quot;7th&quot; };
+C.Chord.TYPES[&quot;m7&quot;]	= { type: &quot;m7&quot;,		formula: &quot;1 b3 5 b7&quot;,	name: &quot;Minor 7th&quot; };
+C.Chord.TYPES[&quot;maj7&quot;]	= { type: &quot;maj7&quot;,	formula: &quot;1 3 5 7&quot;,	name: &quot;Major 7th&quot; };
+C.Chord.TYPES[&quot;sus4&quot;]	= { type: &quot;sus4&quot;,	formula: &quot;1 4 5&quot;,	name: &quot;Suspended 4th&quot; };
+C.Chord.TYPES[&quot;dim&quot;]	= { type: &quot;dim&quot;,	formula: &quot;1 b3 b5&quot;,	name: &quot;Diminished&quot; };
+C.Chord.TYPES[&quot;aug&quot;]	= { type: &quot;aug&quot;,	formula: &quot;1 3 #5&quot;,	name: &quot;Augmented&quot; };
+C.Chord.TYPES[&quot;6&quot;]	= { type: &quot;6&quot;,		formula: &quot;1 3 5 6&quot;,	name: &quot;6th&quot; };
+C.Chord.TYPES[&quot;m6&quot;]	= { type: &quot;m6&quot;,		formula: &quot;1 b3 5 6&quot;,	name: &quot;Minor 6th&quot; };
+C.Chord.TYPES[&quot;6add9&quot;]	= { type: &quot;6add9&quot;,	formula: &quot;1 3 5 6 9&quot;,	name: &quot;6th Add 9th&quot; };
+C.Chord.TYPES[&quot;9&quot;]	= { type: &quot;9&quot;,		formula: &quot;1 3 5 b7 9&quot;,	name: &quot;9th&quot; };
+C.Chord.TYPES[&quot;m9&quot;]	= { type: &quot;m9&quot;,		formula: &quot;1 b3 5 b7 9&quot;,	name: &quot;Minor 9th&quot; };
+C.Chord.TYPES[&quot;maj9&quot;]	= { type: &quot;maj9&quot;,	formula: &quot;1 3 5 7 9&quot;,	name: &quot;Major 9th&quot; };
+
+C.Chord.TYPES[&quot;11&quot;]	= { type: &quot;11&quot;,		formula: &quot;1 (3) 5 b7 (9) 11&quot;,	name: &quot;11th&quot; };
+C.Chord.TYPES[&quot;m11&quot;]	= { type: &quot;m11&quot;,	formula: &quot;1 b3 5 b7 (9) 11&quot;,	name: &quot;Minor 11th&quot; };
+C.Chord.TYPES[&quot;maj11&quot;]	= { type: &quot;maj11&quot;,	formula: &quot;1 3 5 7 (9) 11&quot;,	name: &quot;Major 11th&quot; };
+
+C.Chord.TYPES[&quot;13&quot;]	= { type: &quot;13&quot;,		formula: &quot;1 3 5 b7 (9) (11) 13&quot;,	name: &quot;13th&quot; };
+C.Chord.TYPES[&quot;m13&quot;]	= { type: &quot;m13&quot;,	formula: &quot;1 b3 5 b7 (9) (11) 13&quot;,	name: &quot;Minor 13th&quot; };
+C.Chord.TYPES[&quot;maj13&quot;]	= { type: &quot;maj13&quot;,	formula: &quot;1 3 5 7 (9) (11) 13&quot;,		name: &quot;Major 13th&quot; };
+
+// Weird
+C.Chord.TYPES[&quot;maj7#11&quot;]= { type: &quot;maj7#11&quot;,	formula: &quot;1 3 5 7 #11&quot;,	name: &quot;Major seven sharp 7th&quot; };
+C.Chord.TYPES[&quot;maj-5&quot;]	= { type: &quot;maj-5&quot;,	formula: &quot;1 3 b5&quot;,	name: &quot;Major Flat Five&quot; };
+C.Chord.TYPES[&quot;mmaj7&quot;]	= { type: &quot;m/maj7&quot;,	formula: &quot;1 b3 5 7&quot;,	name: &quot;Minor/Major 9th&quot; };
+C.Chord.TYPES[&quot;mmaj9&quot;]	= { type: &quot;m/maj9&quot;,	formula: &quot;1 b3 5 7 9&quot;,	name: &quot;Minor/Major 9th&quot; };
+C.Chord.TYPES[&quot;mmaj11&quot;]= { type: &quot;m/maj11&quot;,	formula: &quot;1 b3 5 7 (9) 11&quot;,	name: &quot;Minor/Major 11th&quot; };
+C.Chord.TYPES[&quot;mmaj13&quot;]= { type: &quot;m/maj13&quot;,	formula: &quot;1 b3 5 7 (9) (11) 13&quot;,	name: &quot;Minor/Major 13th&quot; };
+C.Chord.TYPES[&quot;m7-5&quot;]	= { type: &quot;m7-5&quot;,	formula: &quot;1 b3 b5 b7&quot;,	name: &quot;Minor seven flat fifth&quot; };
+
+// Sharps?
+C.Chord.TYPES[&quot;7#5&quot;]	= { type: &quot;7#5&quot;,	formula: &quot;1 3 #5 b7&quot;,	name: &quot;Seven sharp five&quot; };
+C.Chord.TYPES[&quot;7b5&quot;]	= { type: &quot;7b5&quot;,	formula: &quot;1 3 b5 b7&quot;,	name: &quot;Seven flat five&quot; };
+C.Chord.TYPES[&quot;7b9&quot;]	= { type: &quot;7b9&quot;,	formula: &quot;1 3 5 b7 b9&quot;,	name: &quot;Seven flat ninth&quot; };
+C.Chord.TYPES[&quot;7#9&quot;]	= { type: &quot;7#9&quot;,	formula: &quot;1 3 5 b7 #9&quot;,	name: &quot;Seven sharp ninth&quot; };
+C.Chord.TYPES[&quot;9#5&quot;]	= { type: &quot;9#5&quot;,	formula: &quot;1 3 #5 b7 9&quot;,	name: &quot;Nine sharp five&quot; };
+C.Chord.TYPES[&quot;9b5&quot;]	= { type: &quot;9b5&quot;,	formula: &quot;1 3 b5 b7 9&quot;,	name: &quot;Nine flat five&quot; };
+C.Chord.TYPES[&quot;7#5#9&quot;]	= { type: &quot;7#5#9&quot;,	formula: &quot;1 3 #5 b7 #9&quot;,	name: &quot;Seven sharp five sharp nine&quot; };
+C.Chord.TYPES[&quot;7#5b9&quot;]	= { type: &quot;7#5b9&quot;,	formula: &quot;1 3 #5 b7 b9&quot;,	name: &quot;Seven sharp five flat nine&quot; };
+C.Chord.TYPES[&quot;7b5#9&quot;]	= { type: &quot;7b5#9&quot;,	formula: &quot;1 3 b5 b7 #9&quot;,	name: &quot;Seven flat five sharp nine&quot; };
+C.Chord.TYPES[&quot;7b5b9&quot;]	= { type: &quot;7b5b9&quot;,	formula: &quot;1 3 b5 b7 b9&quot;,	name: &quot;Seven flat five flat nine&quot; };
+C.Chord.TYPES[&quot;7#11&quot;]	= { type: &quot;7#11&quot;,	formula: &quot;1 3 5 b7 #11&quot;,	name: &quot;Seven sharp eleven&quot; };
+
+// Symatrical
+C.Chord.TYPES[&quot;dim7&quot;]	= { type: &quot;dim7&quot;,	formula: &quot;1 b3 b5 bb7&quot;,	name: &quot;Diminished 7th&quot; };
+
+// 2 finger!
+C.Chord.TYPES[&quot;5&quot;]	= { type: &quot;5&quot;,		formula: &quot;1 5&quot;,		name: &quot;5th&quot; };
+C.Chord.TYPES[&quot;-5&quot;]	= { type: &quot;-5&quot;,		formula: &quot;1 b5&quot;,	name: &quot;Flat 5th&quot; };
+C.Chord.TYPES[&quot;sus2&quot;]	= { type: &quot;sus2&quot;,	formula: &quot;1 2 5&quot;,	name: &quot;Suspended 2nd&quot; };
+C.Chord.TYPES[&quot;#11&quot;]	= { type: &quot;#11&quot;,	formula: &quot;1 5 #11&quot;,	name: &quot;Sharp Eleven&quot; };
+
+
+// Aliases
+C.Chord.TYPES[&quot;°&quot;]	= C.Chord.TYPES[&quot;dim&quot;];
+C.Chord.TYPES[&quot;°7&quot;]	= C.Chord.TYPES[&quot;dim7&quot;];
+C.Chord.TYPES[&quot;+&quot;]	= C.Chord.TYPES[&quot;aug&quot;];
+
+
+
+
+</pre>
+</body>
+</html>

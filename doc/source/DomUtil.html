@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">
+<span id='C-DomUtil'>/**
+</span> * C.DomUtil contains various utility functions for working with DOM.
+ * FULL CREDIT TO LEAFLET
+ */
+C.DomUtil = {
+<span id='C-DomUtil-method-get'>	get: function (id) {
+</span>		return typeof id === 'string' ? document.getElementById(id) : id;
+	},
+
+<span id='C-DomUtil-method-getStyle'>	getStyle: function (el, style) {
+</span>
+		var value = el.style[style] || (el.currentStyle &amp;&amp; el.currentStyle[style]);
+
+		if ((!value || value === 'auto') &amp;&amp; document.defaultView) {
+			var css = document.defaultView.getComputedStyle(el, null);
+			value = css ? css[style] : null;
+		}
+
+		return value === 'auto' ? null : value;
+	},
+
+<span id='C-DomUtil-method-create'>	create: function (tagName, className, container) {
+</span>
+		var el = document.createElement(tagName);
+		el.className = className;
+
+		if (container) {
+			container.appendChild(el);
+		}
+
+		return el;
+	},
+
+<span id='C-DomUtil-method-remove'>	remove: function (el) {
+</span>		var parent = el.parentNode;
+		if (parent) {
+			parent.removeChild(el);
+		}
+	},
+
+<span id='C-DomUtil-method-empty'>	empty: function (el) {
+</span>		while (el.firstChild) {
+			el.removeChild(el.firstChild);
+		}
+	},
+
+<span id='C-DomUtil-method-toFront'>	toFront: function (el) {
+</span>		el.parentNode.appendChild(el);
+	},
+
+<span id='C-DomUtil-method-toBack'>	toBack: function (el) {
+</span>		var parent = el.parentNode;
+		parent.insertBefore(el, parent.firstChild);
+	},
+
+<span id='C-DomUtil-method-hasClass'>	hasClass: function (el, name) {
+</span>		if (el.classList !== undefined) {
+			return el.classList.contains(name);
+		}
+		var className = C.DomUtil.getClass(el);
+		return className.length &gt; 0 &amp;&amp; new RegExp('(^|\\s)' + name + '(\\s|$)').test(className);
+	},
+
+<span id='C-DomUtil-method-addClass'>	addClass: function (el, name) {
+</span>		if (el.classList !== undefined) {
+			var classes = C.Util.splitWords(name);
+			for (var i = 0, len = classes.length; i &lt; len; i++) {
+				el.classList.add(classes[i]);
+			}
+		} else if (!C.DomUtil.hasClass(el, name)) {
+			var className = C.DomUtil.getClass(el);
+			C.DomUtil.setClass(el, (className ? className + ' ' : '') + name);
+		}
+	},
+
+<span id='C-DomUtil-method-removeClass'>	removeClass: function (el, name) {
+</span>		if (el.classList !== undefined) {
+			el.classList.remove(name);
+		} else {
+			C.DomUtil.setClass(el, C.Util.trim((' ' + C.DomUtil.getClass(el) + ' ').replace(' ' + name + ' ', ' ')));
+		}
+	},
+
+<span id='C-DomUtil-method-setClass'>	setClass: function (el, name) {
+</span>		if (el.className.baseVal === undefined) {
+			el.className = name;
+		} else {
+			// in case of SVG element
+			el.className.baseVal = name;
+		}
+	},
+
+<span id='C-DomUtil-method-getClass'>	getClass: function (el) {
+</span>		return el.className.baseVal === undefined ? el.className : el.className.baseVal;
+	},
+
+<span id='C-DomUtil-method-setOpacity'>	setOpacity: function (el, value) {
+</span>
+		if ('opacity' in el.style) {
+			el.style.opacity = value;
+
+		} else if ('filter' in el.style) {
+
+			var filter = false,
+			    filterName = 'DXImageTransform.Microsoft.Alpha';
+
+			// filters collection throws an error if we try to retrieve a filter that doesn't exist
+			try {
+				filter = el.filters.item(filterName);
+			} catch (e) {
+				// don't set opacity to 1 if we haven't already set an opacity,
+				// it isn't needed and breaks transparent pngs.
+				if (value === 1) { return; }
+			}
+
+			value = Math.round(value * 100);
+
+			if (filter) {
+				filter.Enabled = (value !== 100);
+				filter.Opacity = value;
+			} else {
+				el.style.filter += ' progid:' + filterName + '(opacity=' + value + ')';
+			}
+		}
+	},
+
+<span id='C-DomUtil-method-testProp'>	testProp: function (props) {
+</span>
+		var style = document.documentElement.style;
+
+		for (var i = 0; i &lt; props.length; i++) {
+			if (props[i] in style) {
+				return props[i];
+			}
+		}
+		return false;
+	},
+
+<span id='C-DomUtil-method-setTransform'>	setTransform: function (el, offset, scale) {
+</span>		var pos = offset || new C.Point(0, 0);
+
+		el.style[C.DomUtil.TRANSFORM] =
+			'translate3d(' + pos.x + 'px,' + pos.y + 'px' + ',0)' + (scale ? ' scale(' + scale + ')' : '');
+	},
+
+<span id='C-DomUtil-method-setPosition'>	setPosition: function (el, point, no3d) { // (HTMLElement, Point[, Boolean])
+</span>
+		// jshint camelcase: false
+		el._leaflet_pos = point;
+
+		if (C.Browser.any3d &amp;&amp; !no3d) {
+			C.DomUtil.setTransform(el, point);
+		} else {
+			el.style.left = point.x + 'px';
+			el.style.top = point.y + 'px';
+		}
+	},
+
+<span id='C-DomUtil-method-getPosition'>	getPosition: function (el) {
+</span>		// this method is only used for elements previously positioned using setPosition,
+		// so it's safe to cache the position for performance
+
+		// jshint camelcase: false
+		return el._leaflet_pos;
+	},
+	
+<span id='C-DomUtil-method-setSelectedByValue'>	setSelectedByValue: function(sel_id, value){
+</span>	    var sel = document.getElementById(sel_id);
+	    
+	    for (i=0; i&lt;sel.options.length; i++) {
+		if (sel.options[i].value == value) {
+		    sel.selectedIndex = i;
+		    break;
+		}
+	    }
+	},
+	
+<span id='C-DomUtil-method-getSelectedValue'>	getSelectedValue: function(sel_id){
+</span>	    var sel=document.getElementById(sel_id);
+	    
+	    if (sel.options[sel.selectedIndex] == undefined) return null;
+	    
+	    return sel.options[sel.selectedIndex].value;
+	    
+	}
+};
+ 
+</pre>
+</body>
+</html>
