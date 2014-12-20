@@ -3,7 +3,32 @@
 jsChords aims to be a complete and independent javascript-based music library.
 It can be used for educational purposes or integrated in larger music sites 
 (chord databases, song/tab listings, etc). However, it is mainly written by 
-programmers at the moment so any feedback/help would be highly appreciated.
+programmers at the moment so any feedback/help would be very much appreciated.
+
+The idea is to keep this library as simple and extensible as possible. Javascript 
+was chosen  due to good integration with other web technologies and frameworks. 
+Additionally, requires no server setup and can run in "offline" mode on any device 
+with a browser (in theory at least). Server-side implementation may be provided in 
+the future (TeaJS, nodejs?)
+
+## Usage
+
+For use in another website just download jschords-src.js and include it. Optionally,
+maybe a good idea to use a minifier/compiler of your choice to compress the library.
+
+## Editing and rebuilding
+
+If you want to edit and extend the project, clone it (or fork on github) and use the
+provided makefile. This simply combines all the files into jschords-src.js.
+
+Documentation is build with jsduck which is assumed to be in your path. To rebuild:
+
+    cd <path_to_project>/doc
+    make doc
+
+The output will be generated in /doc/html. Online documentation will be updated 
+regularly and can be found at [the project homepage](http://urban-1.github.io/jsChords/doc).
+
 
 ## Supported Chords 
 
@@ -57,3 +82,6 @@ the formulas). At the moment the following are supported:
 | #11 | 1 5 #11 | Sharp Eleven |
 
 
+## Supported Scales
+
+TODO: When scales are implemented...

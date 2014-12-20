@@ -28,7 +28,7 @@ auto:
 	@while [ true ]; \
 	do \
 		make jschords;\
-		sleep 5; \
+		sleep 3; \
 		echo -n "." >&2 ;\
 	done
 	

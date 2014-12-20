@@ -10,7 +10,7 @@
 C.Chord = C.Class.extend({
     options: {
 	root: "-",
-	type: ""	// Empty for major, m, dim, dim9, 7, m7, etc
+	type: ""	// Empty for major, m, dim, dim7, 7, m7, etc
     },
     
     initialize: function (options) {
