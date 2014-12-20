@@ -111,7 +111,7 @@ C.Chord.byString = function(cname) {
     }
     
     return new C.Chord({root:cbase, type:ctype});
-}
+};
 
 /**
  * Get all available chord types as array. These are the Indexes
@@ -127,7 +127,7 @@ C.Chord.getAllTypes = function(cname) {
 	arr.push(v)
     }
     return arr;
-}
+};
 
 
 /**

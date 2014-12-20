@@ -9,10 +9,10 @@ if (typeof console === 'undefined'){
     error:function(){},
     info:function(){}
   }
-}
+};
 
 /**
- * Regbetiko Chords Lib
+ * Chords Lib
  */
 var C = {
     version: 'v0.1'
@@ -33,20 +33,26 @@ C.ajaxErr = function(e){
 };
 
 /**
- * All base notes (no flats)
+ * All base notes (no flats - major scale from C)
+ * @member C
+ * @var
  */
 C.NOTES2  = ["C", "D", "E", "F", "G", "A", "B"];
 
 /**
  * All notes (in semi-tones)
+ * @member C
+ * @var
  */
 C.NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
 /**
  * Notes with different naming...
+ * @member C
  */
 C.NOTESIoanna = ["Do", "Do+", "Re", "Re+", "Mi", "Fa", "Fa+", "Sol", "Sol+", "La", "La+", "Si"];
 
 
 // function lg(a){console.log(a)}
+// Shortcut for console.log but may not work with IE!
 lg = /*console.log =*/ Function.prototype.bind.call(console.log,console);

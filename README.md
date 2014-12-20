@@ -1,4 +1,4 @@
-# jsChords:README
+# jsChords::README (Re-A-D-Mi)
 
 jsChords aims to be a complete and independent javascript-based music library.
 It can be used for educational purposes or integrated in larger music sites 
@@ -21,8 +21,8 @@ external libs.
 ## Usage
 
 For use in another website just download jschords-src.js and include it. Optionally,
-maybe a good idea to use a minifier/compiler of your choice to compress the library.
-Code examples [here](http://urban-1.github.io/jsChords/) (the demo code)
+it may be a good idea to use a minifier/compiler of your choice to compress the library.
+Code examples [here](http://urban-1.github.io/jsChords/#code) (the demo code)
 
 ## Contributing
 
