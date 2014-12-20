@@ -2,7 +2,6 @@
 
 /**
  * Basic Chord class
- * An important notice: FUCK MIDDLE AGED BRITISH FUCKTARDS
  * 
  * @class
  * @extends C.Class
