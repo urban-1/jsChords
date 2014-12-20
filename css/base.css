@@ -5,9 +5,6 @@
 }*/
 
 
-body {
-  font-family: Arial;
-}
 
 table.c_chord_info, table.c_chord_info *,
 table.c_guitar_diagram, table.c_guitar_diagram *,
@@ -19,6 +16,7 @@ table.c_piano_diagram, table.c_piano_diagram * {
     outline: none;
     border-collapse: collapse;
     border-spacing: 0;
+    font-family: Arial;
 }
 
 .c_chord_info .c {
