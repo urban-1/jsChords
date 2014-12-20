@@ -31,16 +31,17 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
+        
+        <h3>Hmmm TODO: Write a bit more stuff and ...</h3>
+	
+
         <h3>Demo</h3>
         <p>
           You can see <a href='demo.html?chord=Am&inst=Guitar' target="_blank">Am demo on guitar</a> or you might as well see it on a bouzouki (traditional 3-String) <a href='demo.html?chord=Am&inst=Bazooka' target="_blank">here</a>. However, you might also like this on a <a href='demo.html?chord=Am&inst=Piano' target="_blank">piano</a> or a 4-String <a href='demo.html?chord=Am&inst=Bazooka4' target="_blank">bouzouki</a> (GDAE)... Or anything else with strings!
         </p>
         
-        <h3>Hmmm TODO: Write a bit more stuff and ...</h3>
+	<h3>Code examples</h3>
 	
-	<h3>Propose other uses (ie local download and mobile)</h3>
-
-	<h3>Give code examples</h3>
         
         <p>
         Curious about how the demo works? Well... it is simple, 15 lines of code:
@@ -119,15 +120,72 @@ updateCount();
     }
 </pre>
     </p>
-	<h3>Or show how to define a new instrument,</h3>
+	<h4>How can I add a new instrument?</h4>
+	
+	<p>
+	One can always create a "customized" guitar to experiment with, however, creating a new new instrument is very easy. 
+	Looking into jsChords/src/instruments/Guitar.js:
+	</p>
+<pre>
+<code lang='javascript'>
+C.Guitar = C.IStringInstrument.extend({
+    options: {
+	numFrets: 12,
+	name: "Guitar",
+	description: "This is A guitar!",
+	strings: ["E", "A", "D", "G", "B", "e"],
+	
+	// Playable? parameters
+	hasBar: true, 
+	ignoreTone0: true,
+	maxPlayableTones: 4,
+	maxFretSpan: 4 
+    }
+})
+</code>
+</pre>
+	<p>
+	Each instrument supports the following options/attributes:
+	<ul>
+	    <li>name: Instrument name</li>
+	    <li>description: Instrument description - not used atm</li>
+	    <li>strings: Defines the number and tuning of string</li>
+	    <li>numFrets: The number of frets to be considered when generating chords</li>
+	    <li>maxPlayableTones: How many fingers can be used on the fretboard</li>
+	    <li>maxFretSpan: How many frets can a chords span</li>
+	    <li>hasBar: If the instrument supports bar chords</li>
+	    <li>ignoreTone0: Assume that 0 is open</li>
+	</ul>
+	</p>
+	
+	
+	<p>
+	    Starting with the Guitar file as base, copy/paste it, rename and customize. Your new instrument is ready!
+	</p>
+	
+	<h3>Propose other uses (ie local download and mobile)</h3>
 	
 	<h3>Documentation</h3>
 	
 	<p>
-	    Documentation is generated with jsduck and can be found online <a href="./doc/" target='_blank'>here</a>
+	    Documentation is generated with jsduck and can be found online <a href="./doc/" target='_blank'>here</a>.
 	</p>
 
     
+	<h4>Disclaimer</h4>
+	
+	Many thanks to Leaflet project, from which we use the classes: C.Class, C.Util and C.DomUtil and we have adopted the same OO model.
+	
+    </section>
+    </div>
+    
+        <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">jsChords maintained by <a href="https://github.com/urban-1">urban-1</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
 
   </body>
 </html>
