@@ -7,12 +7,16 @@
     <meta name="description" content="jsChords : A project that aims on creating all possible chords and scales (based on the formulas) for a given string instrument. Number of strings and tuning can change (experimental piano is also supported)">
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    
+    <script type='text/javascript' src='https://rawgit.com/urban-1/jsChords/master/jschords-src.js'></script> -->
     <link rel="stylesheet" type="text/css" media="screen" href="https://rawgit.com/urban-1/jsChords/master/css/base.css">
-    <script type='text/javascript' src='https://rawgit.com/urban-1/jsChords/master/jschords-src.js'></script>
+    
+<!--    <link rel="stylesheet" type="text/css" media="screen" href="../jsChords/css/base.css">
+    <script type='text/javascript' src='../jsChords/jschords-src.js'></script>-->
+
 
     <title>jsChords</title>
     
-    <link rel="stylesheet" type="text/css" href="../css/base.css" />
     
     
 
@@ -105,7 +109,7 @@
 	    s1.disabled=true;
 	    s2.disabled=true;
 	    
-	    window.history.pushState("", "", window.location.href.replace(/chord=[^&]+/,"chord="+s1.value+escape(s2.value)));
+	    window.history.pushState("", "", window.location.href.replace(/chord=[^&]+/,"chord="+escape(s1.value)+escape(s2.value)));
 	    
 	    chord.setRoot(s1.value);
 	    chord.setType(s2.value);
@@ -191,7 +195,7 @@
 	var inst = qString.inst;
 	var cname = qString.chord;
 	chord = C.Chord.byString(cname)
-	
+	lg(qString)
 	
 	
 	
