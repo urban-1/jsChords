@@ -27,7 +27,7 @@
 C.Chord = C.Class.extend({
     options: {
 	root: &quot;-&quot;,
-	type: &quot;&quot;	// Empty for major, m, dim, dim9, 7, m7, etc
+	type: &quot;&quot;	// Empty for major, m, dim, dim7, 7, m7, etc
     },
     
     initialize: function (options) {
@@ -128,9 +128,9 @@ C.Chord.byString = function(cname) {
     }
     
     return new C.Chord({root:cbase, type:ctype});
-}
+};
 
-<span id='C-Chord-static-method-'>/**
+<span id='C-Chord-static-method-getAllTypes'>/**
 </span> * Get all available chord types as array. These are the Indexes
  * and not the .type field...
  * 
@@ -144,7 +144,7 @@ C.Chord.getAllTypes = function(cname) {
 	arr.push(v)
     }
     return arr;
-}
+};
 
 
 <span id='C-ChordRep'>/**
