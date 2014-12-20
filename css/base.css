@@ -186,11 +186,11 @@ table.c_piano_diagram .pianodot_up {
     position:absolute;
 }
 
-.pianodot.root {
+table.c_piano_diagram .pianodot.root {
     background-color: darkred;
 }
 
-.pianodot_up.root {
+table.c_piano_diagram .pianodot_up.root {
     background-color: red;
 }
 
