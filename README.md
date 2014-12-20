@@ -5,14 +5,18 @@ It can be used for educational purposes or integrated in larger music sites
 (chord databases, song/tab listings, etc). However, it is mainly written by 
 programmers at the moment so any feedback/help would be very much appreciated.
 
+
+Visit [Am demo page!](http://urban-1.github.io/jsChords/demo.html?chord=Am&inst=Guitar) to see
+what is possible atm.
+
 The idea is to keep this library as simple and extensible as possible. Javascript 
 was chosen  due to good integration with other web technologies and frameworks. 
 Additionally, requires no server setup and can run in "offline" mode on any device 
 with a browser (in theory at least). Server-side implementation may be provided in 
-the future (TeaJS, nodejs?)
+the future (TeaJS, nodejs?). We will try to avoid jQuery dependency, however it is 
+in the future plans to provided SVG and Canvas rendering for which we will need 
+external libs.
 
-Visit [Am demo page!](http://urban-1.github.io/jsChords/demo.html?chord=Am&inst=Guitar) to see
-what is possible atm.
 
 ## Usage
 
@@ -20,10 +24,10 @@ For use in another website just download jschords-src.js and include it. Optiona
 maybe a good idea to use a minifier/compiler of your choice to compress the library.
 Code examples [here](http://urban-1.github.io/jsChords/) (the demo code)
 
-## Editing and rebuilding
+## Contributing
 
-If you want to edit and extend the project, clone it (or fork on github) and use the
-provided makefile. This simply combines all the files into jschords-src.js.
+If you want to edit and extend the project, clone it (or preferably fork on github) and 
+use the provided makefile. This simply combines all the files into jschords-src.js.
 
 Documentation is build with jsduck which is assumed to be in your path. To rebuild:
 
