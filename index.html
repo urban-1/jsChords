@@ -73,7 +73,7 @@ switch (inst) {
 	inst = new C.Bazooka();
 	break;
     case "Bazooka4": // Let's change a bit the tuning and strings
-	inst = new C.Bazooka({strings:["G","D","A","E"], maxFretSpan: 4});
+	inst = new C.Bazooka({strings:["C","F","A","D"], maxFretSpan: 4});
 	break;
     case "Piano":
 	inst = new C.Piano();
@@ -149,10 +149,10 @@ C.Guitar = C.IStringInstrument.extend({
 	<ul>
 	    <li>name: Instrument name</li>
 	    <li>description: Instrument description - not used atm</li>
-	    <li>strings: Defines the number and tuning of string</li>
+	    <li>strings: Defines the number and tuning of strings</li>
 	    <li>numFrets: The number of frets to be considered when generating chords</li>
 	    <li>maxPlayableTones: How many fingers can be used on the fretboard</li>
-	    <li>maxFretSpan: How many frets can a chords span</li>
+	    <li>maxFretSpan: How many frets can a chord span</li>
 	    <li>hasBar: If the instrument supports bar chords</li>
 	    <li>ignoreTone0: Assume that 0 is open</li>
 	</ul>

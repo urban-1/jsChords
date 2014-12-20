@@ -10,4 +10,5 @@ if [ $# -gt 0 ]; then
 fi
 
 (cd $JSCHORDS && make doc)
+rm -r ../doc/*
 cp -r $JSCHORDS/doc/html/* ../doc
