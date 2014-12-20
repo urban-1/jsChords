@@ -9,12 +9,16 @@ body {
   font-family: Arial;
 }
 
-.c_chord_info, .c_guitar_diagram td{
+table.c_chord_info, table.c_chord_info *,
+table.c_guitar_diagram, table.c_guitar_diagram *,
+table.c_piano_diagram, table.c_piano_diagram * {
     font-size:12px;
     margin: 0;
     padding: 0;
     border: 0;
     outline: none;
+    border-collapse: collapse;
+    border-spacing: 0;
 }
 
 .c_chord_info .c {
@@ -34,12 +38,7 @@ body {
 /*
  *  Guitar/Strings ==========================================
  */
-table.c_guitar_diagram, table.c_guitar_diagram * {
-    margin: 0; 
-    padding: 0; 
-    border: 0; 
-    outline: none;
-}
+
 
 table.c_guitar_diagram {
 /*     border: 1px solid black; */
@@ -103,8 +102,8 @@ table.c_guitar_diagram .guitardot {
     background-color: darkblue;
     width: 15px;
     height: 15px;
-    margin-left: 12px;
-    margin-top: 18px;
+    margin-left: -8px;
+    margin-top: 6px;
     position:absolute;
     
     color: white;
@@ -165,25 +164,25 @@ table.c_piano_diagram {
 div.vertical-line{
   width: 1px; /* Line width */
   background-color: black; /* Line color */
-  height: 111%; /* Override in-line if you want specific height. */
+  height: 100%; /* Override in-line if you want specific height. */
   margin-left: 4px;
 }
 
-.pianodot {
+table.c_piano_diagram .pianodot {
     border-radius:50%;
     background-color: darkblue;
     width: 8px;
     height: 8px;
-    margin-top: 25px;
+    margin-top: 5px;
     position:absolute;
 }
 
-.pianodot_up {
+table.c_piano_diagram .pianodot_up {
     border-radius:50%;
     background-color: yellow;
     width: 8px;
     height: 8px;
-/*     margin-top: 25px; */
+    margin-top: 15px;
     position:absolute;
 }
 

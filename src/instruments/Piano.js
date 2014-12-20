@@ -113,8 +113,11 @@ C.Piano = C.Instrument.extend({
     
 	    var isSharp = this.options.strings[i].indexOf('#')!=-1;
 	    var cls = "pianodot";
-	    if (isSharp) 
+	    var tops=2;
+	    if (isSharp) {
 		cls = "pianodot_up";
+		tops=1;
+	    }
 	    
 	    	      
 	    // See if root
@@ -122,7 +125,7 @@ C.Piano = C.Instrument.extend({
 // 	    lg(tmpNote+" "+root)
 	    if (tmpNote==root) 
 		cls+=" root";
-	    var dot = C.DomUtil.create("div",cls,idx[1][i]);
+	    var dot = C.DomUtil.create("div",cls,idx[tops][i]);
 	}
 	
 	el.appendChild(base[0]);

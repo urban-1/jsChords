@@ -354,8 +354,9 @@ C.IStringInstrument = C.Instrument.extend({
 	
 	
 	// The Higher the better! (If no shit in the between)
-// 	if (!countXinBetween && !countOinBetween)
-// 	    score-=(this.options.numFrets - min)*1.5;
+	// just fractions for Fs...
+	if (!countXinBetween && !countOinBetween)
+	    score+=( min/30);
 	
 	// Playing a base is good...
 	// Penalty chords that do not have one...
@@ -418,7 +419,7 @@ C.IStringInstrument = C.Instrument.extend({
 	    if (what.maxPos()>this.options.maxFretSpan+1)
 		idxpos = what.getPos(i) - what.minPos() +1; // start from 0 fret + headers
 	    
-	    var dot = C.DomUtil.create("div","guitardot"+cls,idx[idxpos][i]);
+	    var dot = C.DomUtil.create("div","guitardot"+cls,idx[idxpos+1][i+1]);
 	    dot.innerText = tmpNote;
 	}
 	
@@ -443,14 +444,14 @@ C.IStringInstrument = C.Instrument.extend({
 	for (var row=1; row<2+this.options.maxFretSpan+1; row++) {
 	    idx[row] = [];
 	    var cell = C.DomUtil.create('tr','',t);
-	    for (var i=0; i<numStrings; i++) {
+	    for (var i=0; i<numStrings+1; i++) {
 		var cls = "";
 		if (row==1) cls="c_openclose"
-		else if (row>1 && i>0) cls="c_fret_cell"
+		else if (row>1 && i>0 && i<numStrings) cls="c_fret_cell"
 		
 		// Style Extensions
-		if (row==2 && i>0) cls+=" c_fret_cell_top";
-		if (row==numStrings && i>0) cls+=" c_fret_cell_bottom";
+		if (row==2 && i>0 && i<numStrings) cls+=" c_fret_cell_top";
+		if (row==numStrings && i>0 && i<numStrings) cls+=" c_fret_cell_bottom";
 		if (row>1 && i==1) cls+=" c_fret_cell_1st"
 		
 		idx[row][i] = C.DomUtil.create('td',cls,cell);
