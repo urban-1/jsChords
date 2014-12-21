@@ -29,7 +29,7 @@ C.Note = C.Class.extend({
     
     setNote: function(note){
 	this.options.note = note;
-	this.idx = C.Note.noteIndex(this.options.note);
+	this.idx = C.Note.noteIndex(note);
     },
     
     /**

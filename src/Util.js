@@ -98,7 +98,7 @@ C.Util = {
 	    if (o["map"] == o[i]){
 		newO[i] = o[i];
 	    }else if (o[i].parentNode == undefined){
-		newO[i] = clone(o[i]);
+		newO[i] = C.Util.clone(o[i]);
 	    }else{
 		newO[i] = o[i].cloneNode(false);
 	    }
