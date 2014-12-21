@@ -219,7 +219,14 @@ C.ChordRep = C.Chord.extend({
     },
     
     equal: function(c){
-	return (this.pos.join('') == c.pos.join(''));
+	// Very slow...: return (this.pos.join('') == c.pos.join(''));
+	if (c.pos.length!=this.pos.length) return false;
+	
+	for (var i=0; i<this.pos.length; i++)
+	    if (c.pos[i]!=this.pos[i]) 
+		return false;
+	
+	return true;
     },
     
     /**
