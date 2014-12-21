@@ -1,0 +1,25 @@
+
+@-viewport {
+    width: 240px;
+}
+.c_controls {
+    font-size: 15px;
+}
+
+.c_controls .b{
+    font-weight: bold;
+    cursor: pointer;
+    padding-left: 3px;
+    padding-right: 3px;
+    border: 1px solid gray;
+    border-radius: 3px;
+}
+
+.prev {
+    margin-left:15px;
+}
+
+select {
+    height:150px;
+    padding-right: 4px;
+} 

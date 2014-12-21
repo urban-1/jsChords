@@ -9,13 +9,14 @@
 table.c_chord_info, table.c_chord_info *,
 table.c_guitar_diagram, table.c_guitar_diagram *,
 table.c_piano_diagram, table.c_piano_diagram * {
-    font-size:12px;
+    font-size:14px;
     margin: 0;
     padding: 0;
     border: 0;
     outline: none;
     border-collapse: collapse;
     border-spacing: 0;
+    vertical-align:baseline;
     font-family: Arial;
 }
 
@@ -49,7 +50,8 @@ table.c_guitar_diagram {
     padding: 0;
     outline: none;
     margin: 0; 
-    min-width: 18px;
+    width: 18px;
+    max-width: 18px;
     height: 28px;
     overflow: visible;
 }
