@@ -340,8 +340,15 @@ C.Instrument = C.Class.extend({
 	    what = this.c.pos[what];
 	}
 	
+	var t = C.Util.objValue(opts, "type", "html");
 	
-	return what;
+	switch (t) {
+	    case "html":
+		return this.diagramHTML(what,el,opts);
+	    default:
+		throw new Error({'C.Instrument':'Diagram type "'+t+'" is not known...'}) 
+	}
+	
     },
     
     /**

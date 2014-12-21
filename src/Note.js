@@ -20,6 +20,7 @@ C.Note = C.Class.extend({
     
     initialize: function (options) {
 	C.setOptions(this, options);
+	this.idx = C.Note.noteIndex(this.options.note);
     },
     
     toString: function(){
@@ -28,6 +29,7 @@ C.Note = C.Class.extend({
     
     setNote: function(note){
 	this.options.note = note;
+	this.idx = C.Note.noteIndex(this.options.note);
     },
     
     /**
@@ -45,8 +47,8 @@ C.Note = C.Class.extend({
 	if (this.options.playPos!=-1)
 	    this.options.playPos+=off;
 	
-	var newIdx = (idx+off)%C.NOTES.length;
-	this.options.note = C.NOTES[newIdx];
+	this.idx = (idx+off)%C.NOTES.length;
+	this.options.note = C.NOTES[this.idx];
 	
 	return this;
     },
@@ -56,8 +58,8 @@ C.Note = C.Class.extend({
 	var idx2 = C.NOTES2.indexOf(this.options.note);
 	idx2 = (off + idx2)%C.NOTES2.length;
 	
-	var newIdx = C.NOTES.indexOf(C.NOTES2[idx2]);
-	this.options.note = C.NOTES[newIdx];
+	this.idx = C.NOTES.indexOf(C.NOTES2[idx2]);
+	this.options.note = C.NOTES[this.idx];
     },
     
     /**
@@ -83,7 +85,7 @@ C.Note = C.Class.extend({
     },
     
     getIdx: function(useOffset) {
-	var off = C.Note.noteIndex(this.options.note);
+	var off = this.idx;
 	if (useOffset && this.options.octaveOffset) off+=C.NOTES.length;
 	return off;
     }

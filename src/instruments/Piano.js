@@ -16,7 +16,7 @@ C.Piano = C.Instrument.extend({
 	
 	// Playable? parameters
 	hasBar: false, 
-	ingoreTone0: false,
+	ignoreTone0: false,
 	maxPlayableTones: 5,
 	maxFretSpan: 2 // TODO: [ -1 3 5 5 1 0 ] ISNT PLAYABLE
     },
@@ -91,8 +91,8 @@ C.Piano = C.Instrument.extend({
     /**
      * Make this chord diagram on an element
      */
-    diagram: function(what,el,opts){
-	what=C.Instrument.prototype.diagram.call(this,what,el,opts);
+    diagramHTML: function(what,el,opts){
+	
 	el = (el) ? el : this.c.diag.el;
 	if (what===false) return false;
 	

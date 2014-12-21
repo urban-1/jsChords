@@ -9,10 +9,10 @@ if (typeof console === 'undefined'){
     error:function(){},
     info:function(){}
   }
-}
+};
 
 /**
- * Regbetiko Chords Lib
+ * Chords Lib
  */
 var C = {
     version: 'v0.1'
@@ -33,18 +33,28 @@ C.ajaxErr = function(e){
 };
 
 /**
- * All base notes (no flats)
+ * All base notes (no flats - major scale from C)
+ * @member C
+ * @var
  */
 C.NOTES2  = ["C", "D", "E", "F", "G", "A", "B"];
 
 /**
  * All notes (in semi-tones)
+ * @member C
+ * @var
  */
 C.NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+/**
+ * Notes with different naming...
+ * @member C
+ */
 C.NOTESIoanna = ["Do", "Do+", "Re", "Re+", "Mi", "Fa", "Fa+", "Sol", "Sol+", "La", "La+", "Si"];
 
 
 // function lg(a){console.log(a)}
+// Shortcut for console.log but may not work with IE!
 lg = /*console.log =*/ Function.prototype.bind.call(console.log,console);
 
 
@@ -453,6 +463,7 @@ C.Note = C.Class.extend({
     
     initialize: function (options) {
 	C.setOptions(this, options);
+	this.idx = C.Note.noteIndex(this.options.note);
     },
     
     toString: function(){
@@ -461,6 +472,7 @@ C.Note = C.Class.extend({
     
     setNote: function(note){
 	this.options.note = note;
+	this.idx = C.Note.noteIndex(this.options.note);
     },
     
     /**
@@ -478,8 +490,8 @@ C.Note = C.Class.extend({
 	if (this.options.playPos!=-1)
 	    this.options.playPos+=off;
 	
-	var newIdx = (idx+off)%C.NOTES.length;
-	this.options.note = C.NOTES[newIdx];
+	this.idx = (idx+off)%C.NOTES.length;
+	this.options.note = C.NOTES[this.idx];
 	
 	return this;
     },
@@ -489,8 +501,8 @@ C.Note = C.Class.extend({
 	var idx2 = C.NOTES2.indexOf(this.options.note);
 	idx2 = (off + idx2)%C.NOTES2.length;
 	
-	var newIdx = C.NOTES.indexOf(C.NOTES2[idx2]);
-	this.options.note = C.NOTES[newIdx];
+	this.idx = C.NOTES.indexOf(C.NOTES2[idx2]);
+	this.options.note = C.NOTES[this.idx];
     },
     
     /**
@@ -516,7 +528,7 @@ C.Note = C.Class.extend({
     },
     
     getIdx: function(useOffset) {
-	var off = C.Note.noteIndex(this.options.note);
+	var off = this.idx;
 	if (useOffset && this.options.octaveOffset) off+=C.NOTES.length;
 	return off;
     }
@@ -546,7 +558,6 @@ C.Note.byIdx = function(idx){
 
 /**
  * Basic Chord class
- * An important notice: FUCK MIDDLE AGED BRITISH FUCKTARDS
  * 
  * @class
  * @extends C.Class
@@ -554,7 +565,7 @@ C.Note.byIdx = function(idx){
 C.Chord = C.Class.extend({
     options: {
 	root: "-",
-	type: ""	// Empty for major, m, dim, dim9, 7, m7, etc
+	type: ""	// Empty for major, m, dim, dim7, 7, m7, etc
     },
     
     initialize: function (options) {
@@ -655,7 +666,7 @@ C.Chord.byString = function(cname) {
     }
     
     return new C.Chord({root:cbase, type:ctype});
-}
+};
 
 /**
  * Get all available chord types as array. These are the Indexes
@@ -671,7 +682,7 @@ C.Chord.getAllTypes = function(cname) {
 	arr.push(v)
     }
     return arr;
-}
+};
 
 
 /**
@@ -897,7 +908,7 @@ C.ChordRep.getEmpty = function(numStrings, instrument){
  * @static
  * @member C.Chord
  */
-C.Chord.TYPES	= [];
+C.Chord.TYPES	= new Array(47);
 
 C.Chord.TYPES["M"]	= { type: "M",		formula: "1 3 5",	name: "Major" };
 C.Chord.TYPES["m"]	= { type: "m",		formula: "1 b3 5",	name: "Minor" };
@@ -1304,8 +1315,15 @@ C.Instrument = C.Class.extend({
 	    what = this.c.pos[what];
 	}
 	
+	var t = C.Util.objValue(opts, "type", "html");
 	
-	return what;
+	switch (t) {
+	    case "html":
+		return this.diagramHTML(what,el,opts);
+	    default:
+		throw new Error({'C.Instrument':'Diagram type "'+t+'" is not known...'}) 
+	}
+	
     },
     
     /**
@@ -1352,7 +1370,7 @@ C.IStringInstrument = C.Instrument.extend({
      * - hasBar: true/false, If the instrument supports bar chords... with a bar 
      * chord the minimum duplicate pos is considered to be occuping 1 finger
      * 
-     * - ingoreTone0: true/false, Mainly true for string instruments. The 0 is 
+     * - ignoreTone0: true/false, Mainly true for string instruments. The 0 is 
      * considered open and does nto need a finger (used also in _slideWindow)
      * 
      * - maxPlayableTones: 4/5, Usually the same number as the fingers?!
@@ -1378,7 +1396,7 @@ C.IStringInstrument = C.Instrument.extend({
 	    // Register tone...
 	    
 	    // 0 doesnt count in the tones...
-	    if (c.getPos(i)!=0 || !this.options.ingoreTone0) {
+	    if (c.getPos(i)!=0 || !this.options.ignoreTone0) {
 		count++
 	    }
 	    
@@ -1396,7 +1414,6 @@ C.IStringInstrument = C.Instrument.extend({
 	    finalCount=count - c.countNum(dup) +1;
 // 	lg(c+" "+finalCount)
 	var playable = (finalCount <= this.options.maxPlayableTones);
-	
 	
 	if (!playable) return false;
 	return true;
@@ -1451,7 +1468,7 @@ C.IStringInstrument = C.Instrument.extend({
     __doRecursion: function(s,chord){
 // 	var tab = "";
 // 	for (var t=0; t<s; t++) tab+=" ";
-// 	lg (tab+"Rec s="+(s)+"/"+this.getNumStrings()+" "+chord)
+// 	lg ("\n"+tab+"Rec s="+(s)+"/"+this.getNumStrings()+" "+chord)
 	
 	// Static max/min to reduce function call
 	// on recursion
@@ -1474,7 +1491,7 @@ C.IStringInstrument = C.Instrument.extend({
 		    if (min>tmp_pos) min=tmp_pos;
 		}
 		if (max-min > this.options.maxFretSpan) {
-// 		    lg(tab+"Skipping "+tmp_pos+" "+(max-min))
+// 		    lg(tab+"Skipping pos="+tmp_pos+" max="+max+" min="+min)
 		    continue;
 		}
 	    }
@@ -1491,11 +1508,14 @@ C.IStringInstrument = C.Instrument.extend({
 		if (newChord.isEmpty()     || 
 		    this._chordPosExists(newChord)   || 
 		    !this.isChordPlayable(newChord) ||
-		    !this._checkChord(newChord) )
+		    !this._checkChord(newChord) ) {
+// 		    lg (tab+"Failing: "+newChord +this._chordPosExists(newChord))
 		    continue;
+		}
 		
 		
 		// Assuming we got everything now...
+// 		lg (tab+"Adding: "+newChord)
 		this.c.pos.push(newChord);
 	    } 
 	    else {
@@ -1605,12 +1625,14 @@ C.IStringInstrument = C.Instrument.extend({
     
     /**
      * Change and loop:
-     * - Higher priority chords on top
-     * - UnInterapted patters (x ONLY)
-     * - Make sure the distance between fret and o is small
-     * - Make sure a base string is played!
-     * - Span, the sorter the better
-     * - Number of position < the better
+     *     - Higher priority chords on top
+     *     - UnInterapted patters (x ONLY)
+     *     - Make sure the distance between fret and o is small
+     *     - Make sure a base string is played!
+     *     - Span, the sorter the better
+     *     - Number of position < the better
+     * 
+     * TODO:FIXME: This does not work very well... find another way
      */
     getChordDiff: function(c){
 	var min = 100000;
@@ -1661,7 +1683,7 @@ C.IStringInstrument = C.Instrument.extend({
 	
 	var score=50; // out of 100
 	// An Open is good
-	score -= countOTotal*5;
+	score -= (countOTotal)*5;
 	// ... however an open in between is worse
 	score += countOinBetween*10;
 	// and all open is also Bad boy...
@@ -1689,8 +1711,8 @@ C.IStringInstrument = C.Instrument.extend({
 	
 	// The Higher the better! (If no shit in the between)
 	// just fractions for Fs...
-	if (!countXinBetween && !countOinBetween)
-	    score+=( min/30);
+// 	if (!countXinBetween && !countOinBetween)
+// 	    score+=(min);
 	
 	// Playing a base is good...
 	// Penalty chords that do not have one...
@@ -1705,8 +1727,8 @@ C.IStringInstrument = C.Instrument.extend({
     /**
      * Make this chord diagram on an element
      */
-    diagram: function(what,el,opts){
-	what=C.Instrument.prototype.diagram.call(this,what,el,opts);
+    diagramHTML: function(what,el,opts){
+	
 	el = (el) ? el : this.c.diag.el;
 	if (what===false) return false;
 	
@@ -1819,6 +1841,8 @@ C.Scale = C.Class.extend({
     
     initialize: function (options) {
 	C.setOptions(this, options);
+	// Cache distances
+	this.dist = C.Scale.TYPES[this.options.type];
     },
     
     // 1. Create a note (root)
@@ -1839,18 +1863,17 @@ C.Scale = C.Class.extend({
 	    off=1;
 	}
 	
-	var sc = C.Scale.TYPES[this.options.type];
 	
 	// Loop offset! 9ths/11ths
 	var oo = false;
-	if (f>sc.length) {
-	    f=f%sc.length;
+	if (f>this.dist.length) {
+	    f=f%this.dist.length;
 	    oo=true;
 	}
 	
 	
-	for (var i=0; (i<sc.length && i<f-1); i++) {
-	    off+=sc[i]*2;
+	for (var i=0; (i<this.dist.length && i<f-1); i++) {
+	    off+=this.dist[i]*2;
 	}
 	
 	var n = new C.Note({note: this.options.root,octaveOffset: oo});
@@ -2078,27 +2101,8 @@ C.IRenderer = C.Class.extend({
 })
 
 C.IRenderer.byType = function(opts){
-    var t = C.Util.objValue(opts, "type", "html");
-    
-    switch (t) {
-	case "html":
-	    return new C.RendererHtml(opts);
-	default:
-	    throw new Error({'C.IRenderer':'Renderer "'+t+'" is not known...'}) 
-    }
-}
 
-/**
- * HTML/CSS based renderer... well a bit useless...
- * 
- * @class RendererHtml
- */
-C.RendererHtml = C.IRenderer.extend({
-    options: {
-	type: "abstract"
-    }
-})
- 
+}
 /**
  * Bazooka class...
  * 
@@ -2114,7 +2118,7 @@ C.Bazooka = C.IStringInstrument.extend({
 	
 	// Playable? parameters
 	hasBar: true, 
-	ingoreTone0: true,
+	ignoreTone0: true,
 	maxPlayableTones: 4,
 	maxFretSpan: 6 // TODO: [ -1 3 5 5 1 0 ] ISNT PLAYABLE
     },
@@ -2155,9 +2159,9 @@ C.Guitar = C.IStringInstrument.extend({
 	
 	// Playable? parameters
 	hasBar: true, 
-	ingoreTone0: true,
+	ignoreTone0: true,
 	maxPlayableTones: 4,
-	maxFretSpan: 4 // TODO: [ -1 3 5 5 1 0 ] ISNT PLAYABLE
+	maxFretSpan: 4
     }
 }) 
 /**
@@ -2178,7 +2182,7 @@ C.Piano = C.Instrument.extend({
 	
 	// Playable? parameters
 	hasBar: false, 
-	ingoreTone0: false,
+	ignoreTone0: false,
 	maxPlayableTones: 5,
 	maxFretSpan: 2 // TODO: [ -1 3 5 5 1 0 ] ISNT PLAYABLE
     },
@@ -2253,8 +2257,8 @@ C.Piano = C.Instrument.extend({
     /**
      * Make this chord diagram on an element
      */
-    diagram: function(what,el,opts){
-	what=C.Instrument.prototype.diagram.call(this,what,el,opts);
+    diagramHTML: function(what,el,opts){
+	
 	el = (el) ? el : this.c.diag.el;
 	if (what===false) return false;
 	

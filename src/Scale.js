@@ -13,6 +13,8 @@ C.Scale = C.Class.extend({
     
     initialize: function (options) {
 	C.setOptions(this, options);
+	// Cache distances
+	this.dist = C.Scale.TYPES[this.options.type];
     },
     
     // 1. Create a note (root)
@@ -33,18 +35,17 @@ C.Scale = C.Class.extend({
 	    off=1;
 	}
 	
-	var sc = C.Scale.TYPES[this.options.type];
 	
 	// Loop offset! 9ths/11ths
 	var oo = false;
-	if (f>sc.length) {
-	    f=f%sc.length;
+	if (f>this.dist.length) {
+	    f=f%this.dist.length;
 	    oo=true;
 	}
 	
 	
-	for (var i=0; (i<sc.length && i<f-1); i++) {
-	    off+=sc[i]*2;
+	for (var i=0; (i<this.dist.length && i<f-1); i++) {
+	    off+=this.dist[i]*2;
 	}
 	
 	var n = new C.Note({note: this.options.root,octaveOffset: oo});

@@ -18,7 +18,7 @@ C.IStringInstrument = C.Instrument.extend({
      * - hasBar: true/false, If the instrument supports bar chords... with a bar 
      * chord the minimum duplicate pos is considered to be occuping 1 finger
      * 
-     * - ingoreTone0: true/false, Mainly true for string instruments. The 0 is 
+     * - ignoreTone0: true/false, Mainly true for string instruments. The 0 is 
      * considered open and does nto need a finger (used also in _slideWindow)
      * 
      * - maxPlayableTones: 4/5, Usually the same number as the fingers?!
@@ -44,7 +44,7 @@ C.IStringInstrument = C.Instrument.extend({
 	    // Register tone...
 	    
 	    // 0 doesnt count in the tones...
-	    if (c.getPos(i)!=0 || !this.options.ingoreTone0) {
+	    if (c.getPos(i)!=0 || !this.options.ignoreTone0) {
 		count++
 	    }
 	    
@@ -62,7 +62,6 @@ C.IStringInstrument = C.Instrument.extend({
 	    finalCount=count - c.countNum(dup) +1;
 // 	lg(c+" "+finalCount)
 	var playable = (finalCount <= this.options.maxPlayableTones);
-	
 	
 	if (!playable) return false;
 	return true;
@@ -117,7 +116,7 @@ C.IStringInstrument = C.Instrument.extend({
     __doRecursion: function(s,chord){
 // 	var tab = "";
 // 	for (var t=0; t<s; t++) tab+=" ";
-// 	lg (tab+"Rec s="+(s)+"/"+this.getNumStrings()+" "+chord)
+// 	lg ("\n"+tab+"Rec s="+(s)+"/"+this.getNumStrings()+" "+chord)
 	
 	// Static max/min to reduce function call
 	// on recursion
@@ -140,7 +139,7 @@ C.IStringInstrument = C.Instrument.extend({
 		    if (min>tmp_pos) min=tmp_pos;
 		}
 		if (max-min > this.options.maxFretSpan) {
-// 		    lg(tab+"Skipping "+tmp_pos+" "+(max-min))
+// 		    lg(tab+"Skipping pos="+tmp_pos+" max="+max+" min="+min)
 		    continue;
 		}
 	    }
@@ -157,11 +156,14 @@ C.IStringInstrument = C.Instrument.extend({
 		if (newChord.isEmpty()     || 
 		    this._chordPosExists(newChord)   || 
 		    !this.isChordPlayable(newChord) ||
-		    !this._checkChord(newChord) )
+		    !this._checkChord(newChord) ) {
+// 		    lg (tab+"Failing: "+newChord +this._chordPosExists(newChord))
 		    continue;
+		}
 		
 		
 		// Assuming we got everything now...
+// 		lg (tab+"Adding: "+newChord)
 		this.c.pos.push(newChord);
 	    } 
 	    else {
@@ -271,12 +273,14 @@ C.IStringInstrument = C.Instrument.extend({
     
     /**
      * Change and loop:
-     * - Higher priority chords on top
-     * - UnInterapted patters (x ONLY)
-     * - Make sure the distance between fret and o is small
-     * - Make sure a base string is played!
-     * - Span, the sorter the better
-     * - Number of position < the better
+     *     - Higher priority chords on top
+     *     - UnInterapted patters (x ONLY)
+     *     - Make sure the distance between fret and o is small
+     *     - Make sure a base string is played!
+     *     - Span, the sorter the better
+     *     - Number of position < the better
+     * 
+     * TODO:FIXME: This does not work very well... find another way
      */
     getChordDiff: function(c){
 	var min = 100000;
@@ -327,7 +331,7 @@ C.IStringInstrument = C.Instrument.extend({
 	
 	var score=50; // out of 100
 	// An Open is good
-	score -= countOTotal*5;
+	score -= (countOTotal)*5;
 	// ... however an open in between is worse
 	score += countOinBetween*10;
 	// and all open is also Bad boy...
@@ -355,8 +359,8 @@ C.IStringInstrument = C.Instrument.extend({
 	
 	// The Higher the better! (If no shit in the between)
 	// just fractions for Fs...
-	if (!countXinBetween && !countOinBetween)
-	    score+=( min/30);
+// 	if (!countXinBetween && !countOinBetween)
+// 	    score+=(min);
 	
 	// Playing a base is good...
 	// Penalty chords that do not have one...
@@ -371,8 +375,8 @@ C.IStringInstrument = C.Instrument.extend({
     /**
      * Make this chord diagram on an element
      */
-    diagram: function(what,el,opts){
-	what=C.Instrument.prototype.diagram.call(this,what,el,opts);
+    diagramHTML: function(what,el,opts){
+	
 	el = (el) ? el : this.c.diag.el;
 	if (what===false) return false;
 	
