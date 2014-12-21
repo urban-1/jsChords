@@ -96,6 +96,14 @@ C.Note = C.Class.extend({
  * @static
  */
 C.Note.noteIndex = function(note){
+    
+    if (note[1]=="b") {
+	note = note[0];
+	var idx = C.NOTES.indexOf(note)-1;
+	if (idx<0) idx = C.NOTES.length -idx;
+	return idx;
+    }
+    
     return C.NOTES.indexOf(note);
 };
 
