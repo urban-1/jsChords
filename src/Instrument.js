@@ -40,9 +40,9 @@ C.Instrument = C.Class.extend({
 	    th11: false,
 	    th13: false
 	};
-    
-	// Renderer
-	this.r = null;
+
+	
+	
     },
     
     getNumStrings: function(){
@@ -175,8 +175,11 @@ C.Instrument = C.Class.extend({
     
     /**
      * Return to root not for string s. If noPlayable is set
-     * it will not attampt to set playable position... This is
+     * it will not attempt to set playable position... This is
      * needed for getPlayableOffForString which causes a loop
+     * 
+     * NOTE: Do not cache root notes, cause then we need to clone
+     * them, which takes a lot longer than creating...
      */
     getStringRoot: function(s, noPlayable) {
 	var newNote = new C.Note({
@@ -314,9 +317,6 @@ C.Instrument = C.Class.extend({
     //--------------------------------
     // Plotting/GUI
     //--------------------------------
-    setRenderer: function(r){
-	this.r = r;
-    },
     
     /**
      * Base of diagram, ensure that what is a chord representation
