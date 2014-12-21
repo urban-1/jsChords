@@ -11,7 +11,14 @@
  * @class C.Util
  */
 C.Util = {
-    // extend an object with properties of one or more other objects
+    /**
+     * Extend an object with properties of one or more other objects
+     * 
+     * @param {Object} dest Object to be extended
+     * @param {Object} classes/instances One or more other objects to extend from
+     * @return {Object} Altered dest
+     * @static
+     */
     extend: function (dest) {
 	var i, j, len, src;
 	
@@ -24,7 +31,12 @@ C.Util = {
 	return dest;
     },
     
-    // create an object from a given prototype
+    /**
+     * Create an object from a given prototype
+     * 
+     * @return {Object}
+     * @static
+     */
     create: Object.create || (function () {
 	function F() {}
 	return function (proto) {
@@ -34,7 +46,12 @@ C.Util = {
     })(),
     
     /**
-     * set options to an object, inheriting parent's options as well
+     * Set options to an object, inheriting parent's options as well
+     * 
+     * @param {Object} obj
+     * @param {Object} options
+     * @return {Object} obj.options
+     * @static
      */
     setOptions: function (obj, options) {
 	if (!obj.hasOwnProperty('options')) {
@@ -47,10 +64,29 @@ C.Util = {
     },
     
     
+    /**
+     * Check (and return true) if a propery of an object 
+     * is null. Key is given in string format "xxx.yyy.zzz"
+     * 
+     * @param {Object} obj 
+     * @param {String} key
+     * @return {Boolean}
+     * @static
+     */
     objNull: function(obj, key){
 	return (C.Util.objValue(obj,key,undefined)===undefined)
     },
     
+    /**
+     * Return the value of a propery of an object. If it is null, the
+     * defVal will be returned. Key is given in string format "xxx.yyy.zzz"
+     * 
+     * @param {Object} obj 
+     * @param {String} key
+     * @param {Object} defVal
+     * @return Property value or defVal
+     * @static
+     */
     objValue: function(obj, key, defVal){
 	if (!obj) return defVal;
 	var keys = key.split("."), value;
@@ -64,6 +100,13 @@ C.Util = {
 	return value;
     },
     
+    /**
+     * Return true if an object is empty 
+     * 
+     * @param {Object} obj 
+     * @return {Boolean}
+     * @static
+     */
     objIsEmpty: function(obj){
 	for(var key in obj) {
 	    if(obj.hasOwnProperty(key)) return false;
@@ -72,18 +115,33 @@ C.Util = {
 	return true;
     },
     
-    // trim whitespace from both sides of a string
+    /**
+     * Trim whitespace from both sides of a string
+     * @param {String} str 
+     * @return {String}
+     * @static
+     */
     trim: function (str) {
 	return str.trim ? str.trim() : str.replace(/^\s+|\s+$/g, '');
     },
     
-    // split a string into words
+    /**
+     * Split a string into words
+     * 
+     * @param {String} str 
+     * @return {Array} of Strings...
+     * @static
+     */
     splitWords: function (str) {
 	return C.Util.trim(str).split(/\s+/);
     },
     
     /**
      * Clone an object instead of pointing to it!
+     * 
+     * @param {Object/Array} o
+     * @return {Object/Array}
+     * @static
      */
     clone: function(o) {
 	if(typeof(o) != 'object' || o == null) return o;
@@ -108,6 +166,7 @@ C.Util = {
     
     /**
      * Parse the URL query string and return it as object
+     * @return {Object} 
      * @static
      */
     getQueryString: function() {
@@ -134,20 +193,20 @@ C.Util = {
 	return query_string;
     }
 
-    
-
 }
 
 
 /**
  * Alias to C.Util.setOptions
  * @method setOptions
+ * @member C
  * @static
  */
 C.setOptions = C.Util.setOptions;
 /**
  * Alias to C.Util.extend
  * @method extend
+ * @member C
  * @static
  */
 C.extend     = C.Util.extend;

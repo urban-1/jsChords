@@ -45,6 +45,10 @@ C.Piano = C.Instrument.extend({
 	}
     },
     
+    /**
+     * TODO: Check chord... 9ths, etc are wrong at the last
+     * inversion
+     */
     _slideWindow: function(){
 	
 	// Find 1st inversion!

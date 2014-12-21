@@ -12,59 +12,133 @@ C.Chord = C.Class.extend({
 	type: ""	// Empty for major, m, dim, dim7, 7, m7, etc
     },
     
+    /**
+     * Base init function
+     * @param {Object} options
+     */
     initialize: function (options) {
 	C.setOptions(this, options);
     },
     
+    /**
+     * Get string representation of the chord name
+     * concatenating the root and the type (Am7).
+     * 
+     * @return {String}
+     */
     toString: function(){
 	return this.options.root+ this.getChordType().type
     },
     
+    /**
+     * Offset the root of the chord. If step is given 
+     * then it will off*step ie: step=2 (by tone)
+     * 
+     * @param {Number} off Offset steps
+     * @param {Number} step The step size (default 1 - half-tone)
+     * @return this
+     */
     offset: function(off, step){
 	var idx = C.Note.noteIndex(this.options.root);
 	if (step!==undefined) off*=step;
 	var newIdx = (idx+off);
 	this.options.root = C.NOTES[newIdx];
+	
+	return this;
     },
     
+    /**
+     * Set the chord type
+     * 
+     * @param {String} type
+     * @return this
+     */
     setType: function(type){
 	this.options.type = type;
+	return this;
     },
     
+    /**
+     * Set the chord root 
+     * 
+     * @param {String} root
+     * @return this
+     */
     setRoot: function(root){
 	this.options.root = root;
+	return this;
     },
     
+    /**
+     * Return a note index by offset-ing the root note of 
+     * this chord on the major scale
+     * 
+     * @param {String} f
+     * @return {Number}
+     */
     _formulaToIdx: function(f){
 	return this._formulaToNote(f).getIdx();
 	
     },
     
+    /**
+     * Return a note by offset-ing the root note of 
+     * this chord on the major scale
+     * 
+     * @param {String} f
+     * @return {C.Note}
+     */
     _formulaToNote: function(f){
 	var scale = new C.Scale({root: this.options.root,type:"Major"})
 	return scale.offset(f);
     },
     
+    /**
+     * Get the chord's formula as string
+     * 
+     * @return {String}
+     */
     getFormula: function(){
 	return this.getChordType().formula;
     },
     
+    /**
+     * Get chord type information (type/name/formula)
+     * 
+     * @return {Object}
+     */
     getChordType: function(){
 	return C.Chord.TYPES[this.getType()];
     },
     
+    /** 
+     * Get chord's root
+     * @return {String}
+     */
     getRoot: function(){
 	return this.options.root;
     },
     
+    /**
+     * Get chord's type
+     * @return {String}
+     */
     getType: function(){
 	return (this.options.type=="") ? "M" : this.options.type;
     },
     
+    /**
+     * Get full chord's name from C.Chord.TYPES
+     * @return {String}
+     */
     getFullName: function(){
 	return this.getChordType().name;
     },
     
+    /**
+     * Get the notes included in this chord
+     * @return {Array} of C.Note
+     */
     getNotes: function(){
 	var f = this.getFormula().split(" ");
 	var notes = [];
@@ -75,6 +149,10 @@ C.Chord = C.Class.extend({
 	return notes;
     },
     
+    /**
+     * Get the notes included in this chord in Do,Re,La... format
+     * @return {Array} of C.Note
+     */
     getNotesIoanna: function(){
 	var notes= this.getNotes();
 	for (var i=0; i<notes.length; i++) {
@@ -89,6 +167,7 @@ C.Chord = C.Class.extend({
 
 /**
  * Initialize a chord by the its full name...
+ * @param {String} cname Chord name including type
  * @static
  */
 C.Chord.byString = function(cname) {
@@ -119,7 +198,7 @@ C.Chord.byString = function(cname) {
  * @return {Array}
  * @static
  */
-C.Chord.getAllTypes = function(cname) {
+C.Chord.getAllTypes = function() {
     var arr = [];
     for (v in C.Chord.TYPES){
 	if (!C.Chord.TYPES.hasOwnProperty(v)) continue;
@@ -142,6 +221,11 @@ C.ChordRep = C.Chord.extend({
 	instrument: null
     },
     
+    /**
+     * Base init function. Set pos,notes and diff members
+     * 
+     * @param {Object} options
+     */
     initialize: function (options) {
 	C.setOptions(this, options);
 	
@@ -153,10 +237,19 @@ C.ChordRep = C.Chord.extend({
 	this.diff=-1;
     },
     
+    /**
+     * Return the length/numOfStrings for this chord
+     * @return {Number}
+     */
     size: function(){
 	return this.pos.length
     },
     
+    /**
+     * Return the values for string position idx
+     * @param {Number} idx
+     * @return {Number}
+     */
     getPos: function(idx){
 	return this.pos[idx];
     },
@@ -165,20 +258,42 @@ C.ChordRep = C.Chord.extend({
      * Set a position/offset on a specific string. This function
      * will clear any note set for this offset/string. One has to 
      * manually reset the note if needed (use the root+offset of the instrument)
+     * 
+     * @param {Number} idx String index
+     * @param {Number} what Fret offset
+     * @return this
      */
     setPos: function (idx, what){
-	this.pos[idx]=what
-	this.notes[idx]="-"
+	this.pos[idx]=what;
+	this.notes[idx]="-";
+	return this;
     },
     
+    /**
+     * Get the note played at string idx
+     * 
+     * @param {Number} idx String index
+     * @return {C.Note}
+     */
     getNote: function(idx){
 	return this.notes[idx];
     },
     
+    /**
+     * Set the note for string idx 
+     * @param {Number} idx String index
+     * @param {C.Note} what Note
+     */
     setNote: function (idx, what){
 	this.notes[idx]=what
+	return this
     },
     
+    /**
+     * Return true of the chord is empty till string index len
+     * @param {Number} len 
+     * @return {Boolean}
+     */
     isEmptyTill: function (len){
 	for (var i=0; i<len; i++){
 	    if (this.pos[i]!=-1) return false;
@@ -187,6 +302,10 @@ C.ChordRep = C.Chord.extend({
 	return true;
     },
     
+    /**
+     * Return true if the chord is empty (ie [ -1 -1 -1 -1 -1 -1 ])
+     * @return {Boolean}
+     */
     isEmpty: function(){
 	if (this.pos.length==0) return true;
 			    
@@ -197,6 +316,11 @@ C.ChordRep = C.Chord.extend({
 	return true;
     },
     
+    /**
+     * Get partial chord starting from len string
+     * @param {Number} len
+     * @return {C.ChordRep}
+     */
     getPartialHigher: function(len){
 	var tmpChord = C.ChordRep.getEmpty(this.pos.length);
 	for (var i=len; i<tmpChord.pos.length; i++){
@@ -206,6 +330,14 @@ C.ChordRep = C.Chord.extend({
 	return tmpChord;
     },
     
+    /**
+     * String representation of the chord (ie [ -1 0 2 2 2 0]). If
+     * debug flag is true then the notes of the chord and each notes
+     * play position on the instrument is added
+     * 
+     * @param {Boolean} debug
+     * @return {String}
+     */
     toString: function(debug) {
 	var str="[ "+this.pos.join(" ")+" ] ";
 	if (debug) {
@@ -218,6 +350,13 @@ C.ChordRep = C.Chord.extend({
 	return str;
     },
     
+    /**
+     * Compare this ChordRep to another one and return true
+     * if they are the same
+     * 
+     * @param {C.ChordRep} c
+     * @return {Boolean}
+     */
     equal: function(c){
 	// Very slow...: return (this.pos.join('') == c.pos.join(''));
 	if (c.pos.length!=this.pos.length) return false;
@@ -232,6 +371,8 @@ C.ChordRep = C.Chord.extend({
     /**
      * Return the position of the 1st base string that 
      * is played in this chord
+     * 
+     * @return {Number}
      */
     getBasePos: function(){
 	for (var i=0; i<this.pos.length; i++)
@@ -254,6 +395,11 @@ C.ChordRep = C.Chord.extend({
 	return cNote.offset(this.pos[i]);
     },
     
+    /**
+     * Clone a ChordRep. Avoid using deep copy C.Util.clone...
+     * 
+     * @return {C.ChordRep}
+     */
     clone: function(){
 	var c = new C.ChordRep();
 	c.pos = this.pos.slice(0);
@@ -263,6 +409,12 @@ C.ChordRep = C.Chord.extend({
 	return c;
     },
     
+    /**
+     * The the minimum duplicate fret ignoring -1 and 0s.
+     * Return -1000 if not found.
+     * 
+     * @return {Number}
+     */
     getMinDuplicate: function(){
 	var csorted = this.pos.slice(0).sortn();
 	
@@ -280,34 +432,72 @@ C.ChordRep = C.Chord.extend({
 	return dup;
     },
     
+    /**
+     * Count of instances of fret number num
+     * 
+     * @param {Number} num Fret number
+     * @return {Number} count
+     */
     countNum: function(num){
 	return this.pos.countWhat(num);
     },
     
+    /**
+     * Return minimum fret position greater than zero
+     * @return {Number}
+     */
     minPos: function(){
 	return this.pos.mingt(0);
     },
     
+    /**
+     * Return minimum fret position greater than 'gt'
+     * @param {Number} gt
+     * @return {Number}
+     */
     getMinPosGt: function(gt){
 	return this.pos.mingt(gt)
     },
     
+    /**
+     * Return maximum fret position
+     * @return {Number}
+     */
     maxPos: function(){
 	return this.pos.max();
     },
     
+    /**
+     * Return chord span in frets
+     * @return {Number}
+     */
     span: function(){
 	return this.maxPos() - this.minPos();
     },
     
+    /**
+     * Set chords difficulty (the instrument should know how
+     * difficult a chord is and not the chord itself)
+     * 
+     * @param {Number} d 
+     */
     setDiff: function(d){
 	this.diff = d;
+	return this;
     },
     
+    /**
+     * Get difficulty
+     * @return {Number}
+     */
     getDiff: function(){
 	return this.diff;
     },
     
+    /**
+     * Return true if the chord can be played barre
+     * @return {Boolean}
+     */
     isBar: function(){
 	var dup = this.getMinDuplicate();
 	var lowerDup=false;
@@ -328,7 +518,9 @@ C.ChordRep = C.Chord.extend({
 });
 
 /**
- * 
+ * Debug print of a ChordRep array
+ * @param {Array} arr of C.ChordRep
+ * @param {Boolean} debug
  * @static
  */
 C.ChordRep.dbgPrintArray = function(arr,debug){
@@ -338,6 +530,10 @@ C.ChordRep.dbgPrintArray = function(arr,debug){
 };
 
 /**
+ * Get an all empty ChordRep
+ * @param {Number} numStrings
+ * @param {Object} instrument Pointer to instrument
+ * @return {C.ChordRep}
  * @static
  */
 C.ChordRep.getEmpty = function(numStrings, instrument){
