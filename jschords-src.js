@@ -156,7 +156,7 @@ C.Util = {
 	    if (o["map"] == o[i]){
 		newO[i] = o[i];
 	    }else if (o[i].parentNode == undefined){
-		newO[i] = clone(o[i]);
+		newO[i] = C.Util.clone(o[i]);
 	    }else{
 		newO[i] = o[i].cloneNode(false);
 	    }
@@ -472,7 +472,7 @@ C.Note = C.Class.extend({
     
     setNote: function(note){
 	this.options.note = note;
-	this.idx = C.Note.noteIndex(this.options.note);
+	this.idx = C.Note.noteIndex(note);
     },
     
     /**
@@ -775,7 +775,14 @@ C.ChordRep = C.Chord.extend({
     },
     
     equal: function(c){
-	return (this.pos.join('') == c.pos.join(''));
+	// Very slow...: return (this.pos.join('') == c.pos.join(''));
+	if (c.pos.length!=this.pos.length) return false;
+	
+	for (var i=0; i<this.pos.length; i++)
+	    if (c.pos[i]!=this.pos[i]) 
+		return false;
+	
+	return true;
     },
     
     /**
@@ -1015,9 +1022,9 @@ C.Instrument = C.Class.extend({
 	    th11: false,
 	    th13: false
 	};
-    
-	// Renderer
-	this.r = null;
+
+	
+	
     },
     
     getNumStrings: function(){
@@ -1150,8 +1157,11 @@ C.Instrument = C.Class.extend({
     
     /**
      * Return to root not for string s. If noPlayable is set
-     * it will not attampt to set playable position... This is
+     * it will not attempt to set playable position... This is
      * needed for getPlayableOffForString which causes a loop
+     * 
+     * NOTE: Do not cache root notes, cause then we need to clone
+     * them, which takes a lot longer than creating...
      */
     getStringRoot: function(s, noPlayable) {
 	var newNote = new C.Note({
@@ -1289,9 +1299,6 @@ C.Instrument = C.Class.extend({
     //--------------------------------
     // Plotting/GUI
     //--------------------------------
-    setRenderer: function(r){
-	this.r = r;
-    },
     
     /**
      * Base of diagram, ensure that what is a chord representation
@@ -1359,6 +1366,7 @@ C.Instrument = C.Class.extend({
  * @extends C.Instrument
  */
 C.IStringInstrument = C.Instrument.extend({
+    
         
     /**
      * Return true if the chord is playable. This is decided based on the 

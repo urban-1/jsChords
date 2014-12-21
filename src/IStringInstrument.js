@@ -7,6 +7,7 @@
  * @extends C.Instrument
  */
 C.IStringInstrument = C.Instrument.extend({
+    
         
     /**
      * Return true if the chord is playable. This is decided based on the 
