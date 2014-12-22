@@ -5,6 +5,7 @@
  * 
  * @static
  * @member C.Scale
+ * @var
  */
 C.Scale.TYPES = new Array(); 
 

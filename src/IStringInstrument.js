@@ -16,15 +16,18 @@ C.IStringInstrument = C.Instrument.extend({
      * 
      * The parameters are supplied via options in the constructor and they are:
      * 
-     * - hasBar: true/false, If the instrument supports bar chords... with a bar 
+     *    - hasBar: true/false, If the instrument supports bar chords... with a bar 
      * chord the minimum duplicate pos is considered to be occuping 1 finger
      * 
-     * - ignoreTone0: true/false, Mainly true for string instruments. The 0 is 
+     *    - ignoreTone0: true/false, Mainly true for string instruments. The 0 is 
      * considered open and does nto need a finger (used also in _slideWindow)
      * 
-     * - maxPlayableTones: 4/5, Usually the same number as the fingers?!
+     *    - maxPlayableTones: 4/5, Usually the same number as the fingers?!
      *  
-     * - maxFretSpan: 4, how many frets a chord can occupy (width)
+     *     - maxFretSpan: 4, how many frets a chord can occupy (width)
+     * 
+     * @param {C.ChordRep} c
+     * @return {Boolean}
      */
     isChordPlayable: function(c) {
 	
@@ -70,35 +73,9 @@ C.IStringInstrument = C.Instrument.extend({
     },
     
     /**
-     * WARNING: This is a FUCKED UP FUNCTION that you DONT want to mess up with... However,
-     * you might wanna optimize it... so feel free!
-     * 
-     * Now, this function builds chords from formula parts. It works as a sliding window
-     * starting from fret number 0 (which can optionally be considered as free/open - see
-     * instrument options). It will make all combinations of numbers/pos that can be done
-     * in this "box/window". Steps:
-     * 
-     * 1. For each window, create a chord representation including the minimum
-     * numbers. Numbers that are in the box but not minimum will be stored as
-     * alternatives
-     * 
-     * 2. Expand all the alternatives for all the strings (combinatorial) and create
-     * new chord positions (since we do know they fall into the window)
-     * 
-     * 3. Get chord variations for each created chord... variation is considered a 
-     * complete chord without using the base strings (ie F=[ 1 3 3 2 1 1 ],
-     * F_variation = [ -1 -1 -3 2 1 1] and derives from F). Append these to the 
-     * chord list
-     * 
-     * 4. Filter crappy representations out by:
-     *   a. _checkBase: ensuring correct base string (not sure is correct...)
-     *   b. isEmpty: Make sure chord is not empty 
-     *   c. ._chordPosExists: No duplicates
-     *   d. isChordPlayable: Based on the instrument make sure the chord is playable
-     *   e. _checkChord: Verify that the chord has all required formula parts
-     *   
-     * 5. Append the remaining chords in the result: this.c.pos which is an array
-     * of C.ChordRep
+     * Make all the posible string/fret combinations that include notes
+     * from the chords' formula. This is actually done recursively calling 
+     * __doRecursion
      * 
      * @private
      */
@@ -112,8 +89,17 @@ C.IStringInstrument = C.Instrument.extend({
 		new C.ChordRep.getEmpty(this.getNumStrings(), this)
 	    );
 	
+	return this;
     },
     
+    /**
+     * Make all the posible string/fret combinations (recursively) that 
+     * include notes from the chords' formula
+     * 
+     * @param {Number} s Index of string
+     * @param {C.ChordRep} chord Chord built at the current stage
+     * @private
+     */
     __doRecursion: function(s,chord){
 // 	var tab = "";
 // 	for (var t=0; t<s; t++) tab+=" ";
@@ -172,6 +158,7 @@ C.IStringInstrument = C.Instrument.extend({
 	    }
 // 	    lg(tab+"-"+p)
 	}
+	return this;
     },
     
     /**
@@ -223,6 +210,10 @@ C.IStringInstrument = C.Instrument.extend({
     /**
      * Check that the chord start with the base note...
      * MAYBE: Optional?
+     * 
+     * @param {C.ChordRep} c
+     * @param {C.Note} root
+     * @private
      */
     _checkBase: function(c,root){
 	
@@ -246,6 +237,14 @@ C.IStringInstrument = C.Instrument.extend({
     },
     
     
+    /**
+     * Return true if the given chord already exists in the
+     * chord structure
+     * 
+     * @param {C.ChordRep} c
+     * @return {Boolean}
+     * @private
+     */
     _chordPosExists: function(c){
 	for (var p=0; p<this.getNumPos(); p++){
 	    if (c.equal(this.getChordPos(p)))
@@ -255,7 +254,11 @@ C.IStringInstrument = C.Instrument.extend({
 	return false;
     },
     
-    
+    /**
+     * Set all chord positions difficulty for string-based instruments
+     * 
+     * @private
+     */
     _setDifficulty: function(){
 	var maxDiff = -1;
 	var minDiff = 10000;
@@ -270,9 +273,14 @@ C.IStringInstrument = C.Instrument.extend({
 	}
 	
 	// Normalize scores... optional
+	
+	return this;
     },
     
     /**
+     * 
+     * Get chords difficulty
+     * 
      * Change and loop:
      *     - Higher priority chords on top
      *     - UnInterapted patters (x ONLY)
@@ -282,6 +290,9 @@ C.IStringInstrument = C.Instrument.extend({
      *     - Number of position < the better
      * 
      * TODO:FIXME: This does not work very well... find another way
+     * 
+     * @param {C.ChordRep} c
+     * @return {Number}
      */
     getChordDiff: function(c){
 	var min = 100000;
@@ -374,7 +385,11 @@ C.IStringInstrument = C.Instrument.extend({
     },
     
     /**
-     * Make this chord diagram on an element
+     * Make current set chord diagram in an HTML element
+     * 
+     * @param {C.ChordRep} what
+     * @param {HTMLElement} el
+     * @param {Object} opts
      */
     diagramHTML: function(what,el,opts){
 	
@@ -430,8 +445,17 @@ C.IStringInstrument = C.Instrument.extend({
 	
 	el.appendChild(base[0]);
 	
+	return this;
     },
     
+    
+    /**
+     * Helper function to get the basic HTML table to be used for plotting
+     * the chord on...
+     * 
+     * @return {Array} of DOMElement (table) and index of all it's cells
+     * @@private
+     */
     _getBaseTable: function(){
 	var t = C.DomUtil.create('table','c_guitar_diagram noselect');
 	var idx = [];
@@ -467,9 +491,50 @@ C.IStringInstrument = C.Instrument.extend({
     
     
     /**
-     * Make this chord diagram on an element
+     * Create full the fretboard, if applicable. Store
+     * the HTML elements on this.fretboard...
+     * 
+     * @param {HTMLElement} el
+     * @param {Object} opts
+     * @param {String} opts.cssClass Base css class
+     * @param {Boolean} opts.changeSize Change string size
+     * @param {Function} opts.fretClick Callback for on click on fret
      */
     drawInstrument: function(el,opts){
+	
+	var numStrings = this.getNumStrings();
+	var numFrets = this.options.numFrets;
+	
+	// Base css class
+	var cls = C.Util.objValue(opts, "cssClass", "g_fret");
+	
+	// Create base table
+	var t = C.DomUtil.create('table','c_guitar_fretboard noselect');
+	this.fretboard = [];
+	
+	for (var s=0; s<numStrings; s++){
+	    
+	    this.fretboard[s] = [];
+	    var row = C.DomUtil.create('tr','',t);
+	    
+	    var clsExtra = "";
+	    if ( C.Util.objValue(opts, "changeSize", false))  clsExtra = " s"+(s+1);
+	    
+	    for (var f=0; f<numFrets; f++){
+		this.fretboard[s][f] = C.DomUtil.create('td',cls+clsExtra,row);
+		this.fretboard[s][f].setAttribute("data-string",s);
+		this.fretboard[s][f].setAttribute("data-fret",f);
+		var cb = C.Util.objValue(opts, "fretClick", false);
+		if ( cb )  {
+		    clsExtra = " s"+(s+1);
+		    this.fretboard[s][f].onclick = cb;
+		}
+	    }
+	}
+	
+	el.appendChild(t);
+	
+	return this;
     },
     
     drawChordOnInstrument: function(what,el,opts){

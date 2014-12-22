@@ -75,6 +75,7 @@ C.Chord = C.Class.extend({
      * 
      * @param {String} f
      * @return {Number}
+     * @private
      */
     _formulaToIdx: function(f){
 	return this._formulaToNote(f).getIdx();
@@ -87,6 +88,7 @@ C.Chord = C.Class.extend({
      * 
      * @param {String} f
      * @return {C.Note}
+     * @private
      */
     _formulaToNote: function(f){
 	var scale = new C.Scale({root: this.options.root,type:"Major"})

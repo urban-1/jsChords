@@ -6,7 +6,7 @@
  */
 C.Bazooka = C.IStringInstrument.extend({
     options: {
-	numFrets: 15,
+	numFrets: 12,
 	name: "Bazooka",
 	description: "This is A Bazooka!",
 	strings: ["D", "A", "D"],

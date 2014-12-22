@@ -1,0 +1,111 @@
+ 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+    <title>Chords tester</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type='text/javascript' src='../jschords-src.js'></script>
+    <link rel="stylesheet" type="text/css" href="../css/base.css" />
+    
+    
+
+    <script type='text/javascript'>
+	var inst,scale;
+	
+	function updateInfo() {
+	    var div = C.DomUtil.get('info');
+	    C.DomUtil.empty(div);
+	    
+	    var c = C.DomUtil.create;
+	    var nfo = c("table","c_chord_info",div);
+	    
+	    var r = c("tr", "", nfo);
+	    c("td", "", r).textContent = "Name: ";
+	    c("td", "c", r).textContent = chord.toString();
+	    
+	    var r = c("tr", "", nfo);
+	    c("td", "", r).textContent = "Full Name: ";
+	    c("td", "c", r).textContent = chord.getFullName();
+	    
+	    var r = c("tr", "", nfo);
+	    c("td", "", r).textContent = "Formula: ";
+	    c("td", "c", r).textContent = chord.getFormula();
+	    
+	    var r = c("tr", "", nfo);
+	    c("td", "", r).textContent = "Notes: ";
+	    c("td", "c", r).innerHTML = chord.getNotes().join(' ') + "<br/>("+chord.getNotesIoanna().join(' ')+")";
+	}
+	
+	function showInfo(chord){
+	    var div = C.DomUtil.get('info');
+	    
+	    if (div.style.display!="none") {
+		div.style.display = "none";
+		return;
+	    }
+	    
+	    if (div.innerHTML=="") {
+		updateInfo();
+	    }
+	    
+	    div.style.display = "inline-block";
+	    
+	}
+	
+	function onLoad()
+	{
+	   
+	}
+	
+    </script>
+</head>
+<body onload='onLoad();'> 
+    <div id='board' style="display:inline-block"></div>
+    <div id='info'    style="display:none"></div>
+    
+    
+    <script type='text/javascript'>
+	
+	var qString = C.Util.getQueryString();
+	var pos = (qString.pos!==undefined) ? parseInt(qString.pos)-1 : 0;
+	var inst = qString.inst;
+	var scale = qString.scale;
+// 	scale = new C.Scale.byString(cname)
+	
+	
+	
+	switch (inst) {
+	    case "Guitar":
+		inst = new C.Guitar();
+		break;
+	    case "Bazooka":
+		inst = new C.Bazooka();
+		break;
+	    case "Bazooka4":
+		inst = new C.Bazooka({strings:["C","F","A","D"], maxFretSpan: 4});
+		break;
+	    case "Piano":
+		inst = new C.Piano();
+		break;
+	    default:
+		inst = new C.Guitar();
+		
+	}
+	
+	
+	inst.drawInstrument(C.DomUtil.get("board"),{
+	    cssClass: "g_fret_s",
+	    changeSize: true,
+	    fretClick: function(string,fret,ev){
+		alert("String "+(parseInt(this.getAttribute("data-string"))+1)+
+			" / Fret "+(parseInt(this.getAttribute("data-fret"))+1))
+	    }
+	});
+	
+    </script>
+</body> 
+</html> 

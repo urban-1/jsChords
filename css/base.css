@@ -8,7 +8,8 @@
 
 table.c_chord_info, table.c_chord_info *,
 table.c_guitar_diagram, table.c_guitar_diagram *,
-table.c_piano_diagram, table.c_piano_diagram * {
+table.c_piano_diagram, table.c_piano_diagram *,
+table.c_guitar_fretboard, table.c_guitar_fretboard *{
     font-size:14px;
     margin: 0;
     padding: 0;
@@ -39,7 +40,7 @@ table.c_piano_diagram, table.c_piano_diagram * {
  */
 
 
-table.c_guitar_diagram {
+table.c_guitar_diagram,  table.c_guitar_fretboard{
 /*     border: 1px solid black; */
     table-layout:fixed;
     border-spacing: 0px;
@@ -125,6 +126,32 @@ td.c_chord_title {
 }
 
 
+/* Fretboard.... */
+.c_guitar_fretboard td {
+    border:0px;
+    padding: 0;
+    outline: none;
+    margin: 0; 
+    width: 50px;
+    max-width: 50px;
+    height: 25px;
+    overflow: visible;
+}
+
+.g_fret {
+    background-image: url("../images/frets/fret.png")
+}
+
+.g_fret_s {
+    background-image: url("../images/frets/fret_s.png")
+}
+
+.g_fret_s.s1 {background-image: url("../images/frets/fret_s1.png")}
+.g_fret_s.s2 {background-image: url("../images/frets/fret_s2.png")}
+.g_fret_s.s3 {background-image: url("../images/frets/fret_s3.png")}
+.g_fret_s.s4 {background-image: url("../images/frets/fret_s4.png")}
+.g_fret_s.s5 {background-image: url("../images/frets/fret_s5.png")}
+.g_fret_s.s6 {background-image: url("../images/frets/fret_s6.png")}
 
 /*
  *  PIANO ==========================================

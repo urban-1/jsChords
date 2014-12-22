@@ -12,6 +12,11 @@ C.Instrument = C.Class.extend({
 	renderer: null
     },
     
+    /**
+     * Base init function. Creates the chord cache structure
+     * 
+     * @param {Object} options
+     */
     initialize: function (options) {
 	C.setOptions(this, options);
 	
@@ -45,18 +50,45 @@ C.Instrument = C.Class.extend({
 	
     },
     
+    /**
+     * Return the number of strings
+     * 
+     * @return {Number}
+     */
     getNumStrings: function(){
 	return  this.options.strings.length;
     },
     
+    
+    /**
+     * Return the instruments name
+     * 
+     * @return {String}
+     */
     getName: function(){
 	return this.options.name;
     },
     
+    /**
+     * Return the instruments description
+     * 
+     * @return {String}
+     */
     getDescription: function(){
 	return this.options.description;
     },
     
+    /**
+     * Map a chord on this instrument. This function creates
+     * the posible chord positions. Internaly it will call:
+     *     - _initChordData
+     *     - _procChord
+     *     - _slideWindow
+     *     - _setDifficulty
+     *     - _sortChordPos
+     * 
+     * @param {C.Chord} c
+     */
     mapChord: function(c){
 	this.c.chord=c;
 	this._initChordData();
@@ -68,10 +100,13 @@ C.Instrument = C.Class.extend({
 	this._sortChordPos();
 // 	C.ChordRep.dbgPrintArray(this.c.pos,true)
 	
+	return this;
+	
     },
     
     /**
-     * Init chord data structure
+     * Init chord data structure and reset any previous data.
+     * 
      * @private
      */
     _initChordData: function(){
@@ -83,11 +118,14 @@ C.Instrument = C.Class.extend({
 	this.c.notes = new Array();
 	this.c.fpos   = new Array();
 	this.c.pos   = new Array();
+	
+	return this
     },
     
     /**
      * Process chord and find the positions for each formula 
-     * part on each string...
+     * part on each string.
+     * 
      * @private
      */ 
     _procChord: function(){
@@ -145,8 +183,15 @@ C.Instrument = C.Class.extend({
 	    }
 	}
 	
+	return this
+	
     },
     
+    
+    /**
+     * Debug print the result of _procChord function
+     * @private
+     */
     _splitFormulaDbgStr: function(){
 	var str = "For each formula part on a per string basis.\n";
 	for (var i=0; i<this.getNumStrings(); i++){
@@ -180,6 +225,10 @@ C.Instrument = C.Class.extend({
      * 
      * NOTE: Do not cache root notes, cause then we need to clone
      * them, which takes a lot longer than creating...
+     * 
+     * @param {Number} s String index
+     * @param {Boolean} noPlayable If true do not set playble offset
+     * @return {C.Note}
      */
     getStringRoot: function(s, noPlayable) {
 	var newNote = new C.Note({
@@ -195,6 +244,10 @@ C.Instrument = C.Class.extend({
     /**
      * Get playable note offset given a string and the offset
      * on that string
+     * 
+     * @param {Number} s String index
+     * @param {Number} offset 
+     * @return {Number}
      */
     getPlayableOffForString: function(s,offset){
 	var idx = offset;
@@ -216,7 +269,11 @@ C.Instrument = C.Class.extend({
     },
 
     /**
-     * Generic diff
+     * Generic difficulty. A very basic function tobe used 
+     * for initial sorting. Specific instruments should override 
+     * this.
+     * 
+     * @private
      */
     _setDifficulty: function() {
 	for (var i=0; i<this.c.pos.length; i++){
@@ -227,10 +284,18 @@ C.Instrument = C.Class.extend({
 	    diff/=2;
 	    c.setDiff(diff);
 	}
+	
+	return this;
     },
     
     /**
+     * Check if a chord is valid. Make sure that all sub-tones from the 
+     * chords formula exist in the given positions. This function also
+     * supports optional pitches (ie (9) ) in the formula.
+     * 
      * TODO: Add 9ths rules...
+     * 
+     * @param {C.ChordRep} chord
      * @private
      */
     _checkChord: function(chord){
@@ -291,15 +356,29 @@ C.Instrument = C.Class.extend({
     /**
      * Get the number of positions for the current
      * chord mapped on this instrument
+     * 
+     * @return {Number}
      */
     getNumPos: function(){
 	return this.c.pos.length
     },
     
+    
+    /**
+     * Get current plotted position (if any)
+     * 
+     * @return {Number} 
+     */
     getPosIdx: function(){
 	return this.c.diag.idx
     },
     
+    /**
+     * Get chord representation at the specified index
+     * 
+     * @param {Number} idx
+     * @return {C.ChordRep}
+     */
     getChordPos: function(idx){
 	if (idx<0) idx=0;
 	if (idx>=this.c.pos.length) idx=this.c.pos.length-1;
@@ -307,10 +386,16 @@ C.Instrument = C.Class.extend({
 	return this.c.pos[idx];
     },
     
+    /**
+     * Sort chord positions based on their difficulty
+     * @private
+     */
     _sortChordPos: function(){
 	this.c.pos.sort(function(a,b){
 	    return (a.getDiff()-b.getDiff())
 	});
+	
+	return this;
     },
     
     
@@ -320,7 +405,12 @@ C.Instrument = C.Class.extend({
     
     /**
      * Base of diagram, ensure that what is a chord representation
-     * and store info...
+     * and store info. This function is responsible for calling the 
+     * correct plotter based on the options object.
+     * 
+     * @param {C.ChordRep/Number} Index of chord or ChordRep to plot
+     * @param {HTMLElement} el
+     * @param {Object} opts Options
      */
     diagram: function(what,el,opts){
 	
@@ -349,10 +439,13 @@ C.Instrument = C.Class.extend({
 		throw new Error({'C.Instrument':'Diagram type "'+t+'" is not known...'}) 
 	}
 	
+	return this;
     },
     
     /**
-     * Show next chord
+     * Show next chord from the available positions
+     * 
+     * @return {Boolean} True if next exists
      */
     diagramNext: function(){
 	if (this.c.diag.idx==-1 || !this.c.diag.el) return false;
@@ -362,6 +455,7 @@ C.Instrument = C.Class.extend({
     
     /**
      * Show prev chord
+     * @return {Boolean} True if previous exists
      */
     diagramPrev: function(){
 	if (this.c.diag.idx==-1 || !this.c.diag.el) return false;

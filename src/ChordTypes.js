@@ -6,6 +6,7 @@
  * 
  * @static
  * @member C.Chord
+ * @var
  */
 C.Chord.TYPES	= new Array(47);
 
