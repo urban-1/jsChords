@@ -62,6 +62,22 @@ C.Scale = C.Class.extend({
 	
 	var n = new C.Note({note: this.options.root,octaveOffset: oo});
 	return n.offset(off);
+    },
+    
+    /**
+     * Return all notes on the scale
+     * 
+     * @return {Array} C.Notes
+     */
+    getNotes: function(){
+	var notes = [];
+	notes[0] = new C.Note({note: this.options.root});
+	var prevNote = new C.Note({note: this.options.root});
+	for (var i=0; i<this.dist.length-1; i++){
+	    notes.push(prevNote.offset(this.dist[i]*2).clone())
+	}
+	
+	return notes;
     }
 });
 

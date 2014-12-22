@@ -10,15 +10,15 @@ C.Bazooka = C.IStringInstrument.extend({
 	name: "Bazooka",
 	description: "This is A Bazooka!",
 	strings: ["D", "A", "D"],
+	doubleString: true,
 	
 	// Playable? parameters
 	hasBar: true, 
 	ignoreTone0: true,
 	maxPlayableTones: 4,
-	maxFretSpan: 6 // TODO: [ -1 3 5 5 1 0 ] ISNT PLAYABLE
+	maxFretSpan: 6 
     },
     
-//     c: {},
     
     _setDifficulty: function(){
 	for (var i=0; i<this.c.pos.length; i++){

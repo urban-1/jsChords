@@ -93,7 +93,7 @@ C.Instrument = C.Class.extend({
 	this.c.chord=c;
 	this._initChordData();
 	this._procChord();
-// 	lg(this._splitFormulaDbgStr());
+	lg(this._splitFormulaDbgStr());
 	
 	this._slideWindow();
 	this._setDifficulty();
@@ -157,27 +157,10 @@ C.Instrument = C.Class.extend({
 		if (!this.c.fpos[i]) this.c.fpos[i]=[-1];
 		
 // 		lg("String: "+this.options.strings[i])
-		// String root note
-		var rootNote = this.getStringRoot(i);
+
 		
-		var rIdx = rootNote.getIdx();
-		var nIdx = note.getIdx();
-		
-		
-		// Find the 1st position after the root
-		var first;
-		
-		if (nIdx >= rIdx) 
-		    first = parseInt(nIdx-rIdx);
-		else 
-		    first = parseInt((C.NOTES.length - rIdx)+nIdx);
-		
-		// Expand to the number of frets
-		while (first<=this.options.numFrets+this.options.maxFretSpan){
-		    if (this.c.fpos[i].hasItem(first)) continue;
-		    this.c.fpos[i].push(first);
-		    first+=C.NOTES.length;
-		}
+		// New function
+		this.c.fpos[i]=this.c.fpos[i].concat(this.getFretsFor(note,i,this.options.numFrets+this.options.maxFretSpan))
 		
 // 		lg("Pos: "+this.c.pos[fp][i]);
 	    }
@@ -185,6 +168,41 @@ C.Instrument = C.Class.extend({
 	
 	return this
 	
+    },
+    
+    /**
+     * Get all positions/frets for note 'note' on a given string
+     * till a maximum fret 
+     * 
+     * @param {C.Note} note
+     * @param {Number} string
+     * @param {Number} till
+     * @return {Array} Integers
+     */
+    getFretsFor: function(note, string, till){
+	var frets=[];
+	var rootNote = this.getStringRoot(string);
+	
+	var rIdx = rootNote.getIdx();
+	var nIdx = note.getIdx();
+	
+	
+	// Find the 1st position after the root
+	var first;
+	
+	if (nIdx >= rIdx) 
+	    first = parseInt(nIdx-rIdx);
+	else 
+	    first = parseInt((C.NOTES.length - rIdx)+nIdx);
+	
+	// Expand to the number of frets
+	while (first<=till){
+	    if (frets.hasItem(first)) continue;
+	    frets.push(first);
+	    first+=C.NOTES.length;
+	}
+	
+	return frets;
     },
     
     

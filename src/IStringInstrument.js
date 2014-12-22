@@ -492,13 +492,14 @@ C.IStringInstrument = C.Instrument.extend({
     
     /**
      * Create full the fretboard, if applicable. Store
-     * the HTML elements on this.fretboard...
+     * the HTML elements on idx...
      * 
      * @param {HTMLElement} el
      * @param {Object} opts
      * @param {String} opts.cssClass Base css class
      * @param {Boolean} opts.changeSize Change string size
      * @param {Function} opts.fretClick Callback for on click on fret
+     * @return {Array} index
      */
     drawInstrument: function(el,opts){
 	
@@ -506,33 +507,75 @@ C.IStringInstrument = C.Instrument.extend({
 	var numFrets = this.options.numFrets;
 	
 	// Base css class
-	var cls = C.Util.objValue(opts, "cssClass", "g_fret");
+	var cls = C.Util.objValue(opts, "cssClass", "g_fret_s");
+	
+	if (this.options.doubleString) cls+="d";
 	
 	// Create base table
 	var t = C.DomUtil.create('table','c_guitar_fretboard noselect');
-	this.fretboard = [];
+	var idx = [];
+	
+	var cb = C.Util.objValue(opts, "fretClick", false);
 	
 	for (var s=0; s<numStrings; s++){
 	    
-	    this.fretboard[s] = [];
+	    idx[s] = [];
 	    var row = C.DomUtil.create('tr','',t);
+	    idx[s][0] = C.DomUtil.create('td',"g_fret_open",row);
+	    idx[s][0].setAttribute("data-string",s);
+	    idx[s][0].setAttribute("data-fret",0);
+	    if (cb) idx[s][0].onclick = cb;
 	    
 	    var clsExtra = "";
 	    if ( C.Util.objValue(opts, "changeSize", false))  clsExtra = " s"+(s+1);
 	    
-	    for (var f=0; f<numFrets; f++){
-		this.fretboard[s][f] = C.DomUtil.create('td',cls+clsExtra,row);
-		this.fretboard[s][f].setAttribute("data-string",s);
-		this.fretboard[s][f].setAttribute("data-fret",f);
-		var cb = C.Util.objValue(opts, "fretClick", false);
-		if ( cb )  {
-		    clsExtra = " s"+(s+1);
-		    this.fretboard[s][f].onclick = cb;
-		}
+	    for (var f=1; f<numFrets+1; f++){
+		idx[s][f] = C.DomUtil.create('td',cls+clsExtra,row);
+		idx[s][f].setAttribute("data-string",s);
+		idx[s][f].setAttribute("data-fret",f);
+		if (cb) idx[s][f].onclick = cb;
 	    }
 	}
 	
+	idx[numStrings] = [];
+	var row = C.DomUtil.create('tr','',t);
+	for (var f=0; f<numFrets+1; f++){
+	    idx[numStrings][f] = C.DomUtil.create('td',"g_fret_num",row);
+	    if ((f!=1 && f%2!=0 && f!=11) || f==12) idx[numStrings][f].innerText=f;
+	}
+	
 	el.appendChild(t);
+	
+	return idx;
+    },
+    
+    /**
+     * Draw the whole scale on the fretboard. TODO: extend
+     * with boxes
+     */
+    drawScale: function(scale,el,opts){
+	C.DomUtil.empty (el);
+	var idx = this.drawInstrument(el,opts);
+	var notes = scale.getNotes();
+	
+	for (var n=0; n<notes.length; n++) {
+	    
+	    // create the correct class for this note
+	    var cls="";
+	    if (n==0) cls=" root";
+	    
+	    for (var s=0; s<this.getNumStrings(); s++) {
+		
+		// Get all positions of this not on this string
+		var pos = this.getFretsFor(notes[n],s,this.options.numFrets);
+		
+		// Add them
+		for (var p=0; p<pos.length; p++) {
+		    var dot = C.DomUtil.create("div","guitardot"+cls,idx[this.getNumStrings()-s-1][pos[p]]);
+		    dot.innerText = notes[n].toString();
+		}
+	    }
+	}
 	
 	return this;
     },

@@ -7,6 +7,7 @@
 - Support TABs at some point?
 - Extend with renderers and support SVG (Raphael) and Canvas
 - Better chord classification algorithm
+- Left-handed diagrams and fretboards
 
 # Contact the following ppl:
 

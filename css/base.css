@@ -134,8 +134,46 @@ td.c_chord_title {
     margin: 0; 
     width: 50px;
     max-width: 50px;
-    height: 25px;
+    height: 20px;
     overflow: visible;
+    background-position: 50% 50%;
+}
+
+.c_guitar_fretboard td.g_fret_open {
+    border-right: 5px solid black;
+}
+
+table.c_guitar_fretboard .guitardot {
+    border-radius:50%;
+    width: 15px;
+    height: 15px;
+    margin-left: 18px;
+    margin-top: 1px;
+    position:absolute;
+    background-color: yellow;
+    border: 1px solid black;
+    
+    color: black;
+    font-size:10px;
+    font-weight:bold;
+    vertical-align: bottom;
+    text-align: center;
+    line-height: 15px;
+}
+
+table.c_guitar_fretboard .g_fret_open .guitardot{
+    margin-left: 33px;
+}
+
+
+table.c_guitar_fretboard .guitardot.root{
+    background-color: orange;
+}
+
+table.c_guitar_fretboard .g_fret_num {
+    text-align:center;
+    padding-top:2px;
+    font-weight: bold;
 }
 
 .g_fret {
@@ -152,6 +190,13 @@ td.c_chord_title {
 .g_fret_s.s4 {background-image: url("../images/frets/fret_s4.png")}
 .g_fret_s.s5 {background-image: url("../images/frets/fret_s5.png")}
 .g_fret_s.s6 {background-image: url("../images/frets/fret_s6.png")}
+
+/* Double Strings */
+.g_fret_sd.s1 {background-image: url("../images/frets/fret_sd1.png")}
+.g_fret_sd.s2 {background-image: url("../images/frets/fret_sd2.png")}
+.g_fret_sd.s3 {background-image: url("../images/frets/fret_sd3.png")}
+.g_fret_sd.s4 {background-image: url("../images/frets/fret_sd4.png")}
+
 
 /*
  *  PIANO ==========================================

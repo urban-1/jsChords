@@ -71,10 +71,10 @@
     <script type='text/javascript'>
 	
 	var qString = C.Util.getQueryString();
-	var pos = (qString.pos!==undefined) ? parseInt(qString.pos)-1 : 0;
 	var inst = qString.inst;
-	var scale = qString.scale;
-// 	scale = new C.Scale.byString(cname)
+	var scale = (qString.scale) ? qString.scale : "Major";
+	var root = (qString.root) ? qString.root : "C";
+	scale =  new C.Scale({root:root, type:scale});
 	
 	
 	
@@ -97,12 +97,15 @@
 	}
 	
 	
-	inst.drawInstrument(C.DomUtil.get("board"),{
-	    cssClass: "g_fret_s",
-	    changeSize: true,
-	    fretClick: function(string,fret,ev){
-		alert("String "+(parseInt(this.getAttribute("data-string"))+1)+
-			" / Fret "+(parseInt(this.getAttribute("data-fret"))+1))
+	inst.drawScale(
+	    scale,
+	    C.DomUtil.get("board"),
+	    {
+// 		cssClass: "g_fret_s",
+		changeSize: true,
+		fretClick: function(string,fret,ev){
+		    alert("String "+(parseInt(this.getAttribute("data-string"))+1)+
+			    " / Fret "+(parseInt(this.getAttribute("data-fret"))))
 	    }
 	});
 	

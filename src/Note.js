@@ -10,7 +10,7 @@ C.Note = C.Class.extend({
 	note: "-",
 	
 	// Playable attributes
-	
+	type: 0,		// 0=normal, 1=optional, 2=blue?
 	duration: 1,		// time duration (sec?)
 	style: "",		// bend "b", vibrato "~"
 	styleAttr: "",		// Style attribure: 1, 1/2, etc for bends,
@@ -155,8 +155,8 @@ C.Note = C.Class.extend({
  * @static
  */
 C.Note.noteIndex = function(note){
-    
-    if (note[1]=="b") {
+//     lg(note)
+    if (note.length>1 && note[1]=="b") {
 	note = note[0];
 	var idx = C.NOTES.indexOf(note)-1;
 	if (idx<0) idx = C.NOTES.length -idx;

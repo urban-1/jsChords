@@ -513,7 +513,7 @@ C.Note = C.Class.extend({
 	note: "-",
 	
 	// Playable attributes
-	
+	type: 0,		// 0=normal, 1=optional, 2=blue?
 	duration: 1,		// time duration (sec?)
 	style: "",		// bend "b", vibrato "~"
 	styleAttr: "",		// Style attribure: 1, 1/2, etc for bends,
@@ -658,8 +658,8 @@ C.Note = C.Class.extend({
  * @static
  */
 C.Note.noteIndex = function(note){
-    
-    if (note[1]=="b") {
+//     lg(note)
+    if (note.length>1 && note[1]=="b") {
 	note = note[0];
 	var idx = C.NOTES.indexOf(note)-1;
 	if (idx<0) idx = C.NOTES.length -idx;
@@ -1409,7 +1409,7 @@ C.Instrument = C.Class.extend({
 	this.c.chord=c;
 	this._initChordData();
 	this._procChord();
-// 	lg(this._splitFormulaDbgStr());
+	lg(this._splitFormulaDbgStr());
 	
 	this._slideWindow();
 	this._setDifficulty();
@@ -1473,27 +1473,10 @@ C.Instrument = C.Class.extend({
 		if (!this.c.fpos[i]) this.c.fpos[i]=[-1];
 		
 // 		lg("String: "+this.options.strings[i])
-		// String root note
-		var rootNote = this.getStringRoot(i);
+
 		
-		var rIdx = rootNote.getIdx();
-		var nIdx = note.getIdx();
-		
-		
-		// Find the 1st position after the root
-		var first;
-		
-		if (nIdx >= rIdx) 
-		    first = parseInt(nIdx-rIdx);
-		else 
-		    first = parseInt((C.NOTES.length - rIdx)+nIdx);
-		
-		// Expand to the number of frets
-		while (first<=this.options.numFrets+this.options.maxFretSpan){
-		    if (this.c.fpos[i].hasItem(first)) continue;
-		    this.c.fpos[i].push(first);
-		    first+=C.NOTES.length;
-		}
+		// New function
+		this.c.fpos[i]=this.c.fpos[i].concat(this.getFretsFor(note,i,this.options.numFrets+this.options.maxFretSpan))
 		
 // 		lg("Pos: "+this.c.pos[fp][i]);
 	    }
@@ -1501,6 +1484,41 @@ C.Instrument = C.Class.extend({
 	
 	return this
 	
+    },
+    
+    /**
+     * Get all positions/frets for note 'note' on a given string
+     * till a maximum fret 
+     * 
+     * @param {C.Note} note
+     * @param {Number} string
+     * @param {Number} till
+     * @return {Array} Integers
+     */
+    getFretsFor: function(note, string, till){
+	var frets=[];
+	var rootNote = this.getStringRoot(string);
+	
+	var rIdx = rootNote.getIdx();
+	var nIdx = note.getIdx();
+	
+	
+	// Find the 1st position after the root
+	var first;
+	
+	if (nIdx >= rIdx) 
+	    first = parseInt(nIdx-rIdx);
+	else 
+	    first = parseInt((C.NOTES.length - rIdx)+nIdx);
+	
+	// Expand to the number of frets
+	while (first<=till){
+	    if (frets.hasItem(first)) continue;
+	    frets.push(first);
+	    first+=C.NOTES.length;
+	}
+	
+	return frets;
     },
     
     
@@ -2279,13 +2297,14 @@ C.IStringInstrument = C.Instrument.extend({
     
     /**
      * Create full the fretboard, if applicable. Store
-     * the HTML elements on this.fretboard...
+     * the HTML elements on idx...
      * 
      * @param {HTMLElement} el
      * @param {Object} opts
      * @param {String} opts.cssClass Base css class
      * @param {Boolean} opts.changeSize Change string size
      * @param {Function} opts.fretClick Callback for on click on fret
+     * @return {Array} index
      */
     drawInstrument: function(el,opts){
 	
@@ -2293,33 +2312,75 @@ C.IStringInstrument = C.Instrument.extend({
 	var numFrets = this.options.numFrets;
 	
 	// Base css class
-	var cls = C.Util.objValue(opts, "cssClass", "g_fret");
+	var cls = C.Util.objValue(opts, "cssClass", "g_fret_s");
+	
+	if (this.options.doubleString) cls+="d";
 	
 	// Create base table
 	var t = C.DomUtil.create('table','c_guitar_fretboard noselect');
-	this.fretboard = [];
+	var idx = [];
+	
+	var cb = C.Util.objValue(opts, "fretClick", false);
 	
 	for (var s=0; s<numStrings; s++){
 	    
-	    this.fretboard[s] = [];
+	    idx[s] = [];
 	    var row = C.DomUtil.create('tr','',t);
+	    idx[s][0] = C.DomUtil.create('td',"g_fret_open",row);
+	    idx[s][0].setAttribute("data-string",s);
+	    idx[s][0].setAttribute("data-fret",0);
+	    if (cb) idx[s][0].onclick = cb;
 	    
 	    var clsExtra = "";
 	    if ( C.Util.objValue(opts, "changeSize", false))  clsExtra = " s"+(s+1);
 	    
-	    for (var f=0; f<numFrets; f++){
-		this.fretboard[s][f] = C.DomUtil.create('td',cls+clsExtra,row);
-		this.fretboard[s][f].setAttribute("data-string",s);
-		this.fretboard[s][f].setAttribute("data-fret",f);
-		var cb = C.Util.objValue(opts, "fretClick", false);
-		if ( cb )  {
-		    clsExtra = " s"+(s+1);
-		    this.fretboard[s][f].onclick = cb;
-		}
+	    for (var f=1; f<numFrets+1; f++){
+		idx[s][f] = C.DomUtil.create('td',cls+clsExtra,row);
+		idx[s][f].setAttribute("data-string",s);
+		idx[s][f].setAttribute("data-fret",f);
+		if (cb) idx[s][f].onclick = cb;
 	    }
 	}
 	
+	idx[numStrings] = [];
+	var row = C.DomUtil.create('tr','',t);
+	for (var f=0; f<numFrets+1; f++){
+	    idx[numStrings][f] = C.DomUtil.create('td',"g_fret_num",row);
+	    if ((f!=1 && f%2!=0 && f!=11) || f==12) idx[numStrings][f].innerText=f;
+	}
+	
 	el.appendChild(t);
+	
+	return idx;
+    },
+    
+    /**
+     * Draw the whole scale on the fretboard. TODO: extend
+     * with boxes
+     */
+    drawScale: function(scale,el,opts){
+	C.DomUtil.empty (el);
+	var idx = this.drawInstrument(el,opts);
+	var notes = scale.getNotes();
+	
+	for (var n=0; n<notes.length; n++) {
+	    
+	    // create the correct class for this note
+	    var cls="";
+	    if (n==0) cls=" root";
+	    
+	    for (var s=0; s<this.getNumStrings(); s++) {
+		
+		// Get all positions of this not on this string
+		var pos = this.getFretsFor(notes[n],s,this.options.numFrets);
+		
+		// Add them
+		for (var p=0; p<pos.length; p++) {
+		    var dot = C.DomUtil.create("div","guitardot"+cls,idx[this.getNumStrings()-s-1][pos[p]]);
+		    dot.innerText = notes[n].toString();
+		}
+	    }
+	}
 	
 	return this;
     },
@@ -2391,6 +2452,22 @@ C.Scale = C.Class.extend({
 	
 	var n = new C.Note({note: this.options.root,octaveOffset: oo});
 	return n.offset(off);
+    },
+    
+    /**
+     * Return all notes on the scale
+     * 
+     * @return {Array} C.Notes
+     */
+    getNotes: function(){
+	var notes = [];
+	notes[0] = new C.Note({note: this.options.root});
+	var prevNote = new C.Note({note: this.options.root});
+	for (var i=0; i<this.dist.length-1; i++){
+	    notes.push(prevNote.offset(this.dist[i]*2).clone())
+	}
+	
+	return notes;
     }
 });
 
@@ -2629,15 +2706,15 @@ C.Bazooka = C.IStringInstrument.extend({
 	name: "Bazooka",
 	description: "This is A Bazooka!",
 	strings: ["D", "A", "D"],
+	doubleString: true,
 	
 	// Playable? parameters
 	hasBar: true, 
 	ignoreTone0: true,
 	maxPlayableTones: 4,
-	maxFretSpan: 6 // TODO: [ -1 3 5 5 1 0 ] ISNT PLAYABLE
+	maxFretSpan: 6 
     },
     
-//     c: {},
     
     _setDifficulty: function(){
 	for (var i=0; i<this.c.pos.length; i++){
