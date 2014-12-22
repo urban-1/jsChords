@@ -10,7 +10,7 @@
     
     <script type='text/javascript' src='https://rawgit.com/urban-1/jsChords/master/jschords-src.js'></script>
     <link rel="stylesheet" type="text/css" media="screen" href="https://rawgit.com/urban-1/jsChords/master/css/base.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="https://rawgit.com/urban-1/jsChords/master/css/get.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="https://rawgit.com/urban-1/jsChords/master/css/scale.css">
     
 <!--    <link rel="stylesheet" type="text/css" media="screen" href="../jsChords/css/base.css">
     <script type='text/javascript' src='../jsChords/jschords-src.js'></script>-->
@@ -20,14 +20,19 @@
     
     
     
+    
 
     <script type='text/javascript'>
-	var inst,chord;
-	function updateCount(){
-	    var i = inst.getPosIdx()+1;
-	    var tot = inst.getNumPos();
-	    C.DomUtil.get("count").innerText = i+"/"+tot;
-	}
+	var inst,scale;
+	
+	var opts = {
+// 		cssClass: "g_fret_s",
+		changeSize: true,
+		fretClick: function(string,fret,ev){
+		    alert("String "+(parseInt(this.getAttribute("data-string"))+1)+
+			    " / Fret "+(parseInt(this.getAttribute("data-fret"))))
+		}
+	};
 	
 	function updateInfo() {
 	    var div = C.DomUtil.get('info');
@@ -69,20 +74,14 @@
 	    
 	}
 	
-	function showMore(){
-	    var div = C.DomUtil.get('more');
-	    if (div.style.display!="none") {
-		div.style.display = "none";
-	    }else{
-		div.style.display = "inline-block";
-		C.DomUtil.setSelectedByValue('allNotes',chord.getRoot());
-		C.DomUtil.setSelectedByValue('allTypes',chord.getType());
-	    }
+	function onLoad()
+	{
+	   initSelects();
 	}
 	
 	function initSelects(){
 	    var s1 = C.DomUtil.get('allNotes');
-	    var s2 = C.DomUtil.get('allTypes');
+	    var s2 = C.DomUtil.get('allScales');
 	    
 	    for (var i=0; i<C.NOTES.length; i++){
 		var o=C.DomUtil.create('option','',s1);
@@ -90,39 +89,37 @@
 		o.innerText = C.NOTES[i];
 	    }
 	    
-	    for (v in C.Chord.TYPES){
-		if (!C.Chord.TYPES.hasOwnProperty(v)) continue;
+	    for (v in C.Scale.TYPES){
+		if (!C.Scale.TYPES.hasOwnProperty(v)) continue;
 		var o=C.DomUtil.create('option','',s2);
 		o.setAttribute("value",v);
-		o.innerText = C.Chord.TYPES[v].type;
+		o.innerText = v;
 	    }
-	}
-	
-	function onLoad()
-	{
-	    initSelects();
+	    
+	    
+	    C.DomUtil.setSelectedByValue('allNotes', scale.getRoot());
+	    C.DomUtil.setSelectedByValue('allScales',scale.getName());
 	}
 	
 	function onSelChange(){
 	    var s1=C.DomUtil.get('allNotes')
-	    var s2=C.DomUtil.get('allTypes')
+	    var s2=C.DomUtil.get('allScales')
 	    
 	    s1.disabled=true;
 	    s2.disabled=true;
 	    
-	    window.history.pushState("", "", window.location.href.replace(/chord=[^&]+/,"chord="+escape(s1.value)+escape(s2.value)));
+	    window.history.pushState("", "", window.location.href.replace(/root=[^&]*/,"root="+escape(s1.value)));
+	    window.history.pushState("", "", window.location.href.replace(/scale=[^&]*/,"scale="+escape(s2.value)));
 	    
-	    chord.setRoot(s1.value);
-	    chord.setType(s2.value);
+	    scale.setRoot(s1.value);
+	    scale.setName(s2.value);
 	    
-	    C.DomUtil.empty(C.DomUtil.get('diagram'))
-	    inst.mapChord(chord);
-	    inst.diagram(0,C.DomUtil.get('diagram'),{});
+	    inst.clearScale();
+	    inst.drawScale(scale,opts);
 	    
 	    s1.disabled=false;
 	    s2.disabled=false;
-	    updateCount();
-	    updateInfo();
+	    
 	}
 	
     </script>
@@ -149,39 +146,27 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
       
-      <h3>Demo!</h3>
+      <h3>Scales Demo!</h3>
       <p>
-	 Below you can see a demo of what this lib can do. Click on the '&lt;' and '&gt;' to navigate between different versions of this chord. Click on '?' to get more information about this chord and on '!' to change it. Also, notice the URL format and experiment with it. Type (inst=) "Piano" or "Bazooka4". Enjoy... :)
+	 Simple scales demo...
       </p>
       
-      
-      <p>
-     <div id='diagram' style="display:inline-block"></div>
-    <div id='info'    style="display:none"></div>
-    
-    <div style="display:none;margin-left:15px;" id='more'>
+<div id='board' style="display:inline-block"></div>
+    <br>
+    <div id='more'>
 	<select id='allNotes' size="2" onchange="onSelChange();"></select>
-	<select id='allTypes' size="2" onchange="onSelChange();"></select>
+	<select id='allScales' size="2" onchange="onSelChange();"></select>
     </div>
     
-    <br/>
-    <div class='c_controls noselect'>
-	<span class='prev b' onclick='inst.diagramPrev();updateCount()'>&lt;</span>
-	<span id="count"></span>
-	<span class='next b' onclick='inst.diagramNext();updateCount()'>&gt;</span>
-	<span class='shInfo b' onclick='showInfo(chord)'>?</span>
-	<span class='shMore b' onclick='showMore()'>!</span>
-    </div>
-    </p>
     
     <script type='text/javascript'>
 	
 	var qString = C.Util.getQueryString();
-	var pos = (qString.pos!==undefined) ? parseInt(qString.pos)-1 : 0;
-	var inst = qString.inst;
-	var cname = qString.chord;
-	chord = C.Chord.byString(cname)
-	lg(qString)
+	inst = qString.inst;
+	
+	scale = (qString.scale) ? qString.scale : "Major";
+	var root = (qString.root) ? qString.root : "C";
+	scale =  new C.Scale({root:root, name:scale});
 	
 	
 	
@@ -193,19 +178,22 @@
 		inst = new C.Bazooka();
 		break;
 	    case "Bazooka4":
-		inst = new C.Bazooka({strings:["G","D","A","E"], maxFretSpan: 4});
+		inst = new C.Bazooka({strings:["C","F","A","D"], maxFretSpan: 4});
 		break;
 	    case "Piano":
 		inst = new C.Piano();
 		break;
 	    default:
+		inst = new C.Guitar();
 		
 	}
 	
 	
-	inst.mapChord(chord);
-	inst.diagram(pos,C.DomUtil.get('diagram'),{});
-	updateCount();
+	inst.drawScale(
+	    scale,
+	    opts,
+	    C.DomUtil.get("board")
+	);
 	
     </script>
 	<p>
