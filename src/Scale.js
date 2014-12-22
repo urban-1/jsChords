@@ -8,7 +8,7 @@
 C.Scale = C.Class.extend({
     options: {
 	root: "C",
-	type: "Major"
+	name: "Major"
     },
     
     /**
@@ -20,7 +20,34 @@ C.Scale = C.Class.extend({
     initialize: function (options) {
 	C.setOptions(this, options);
 	// Cache distances
-	this.dist = C.Scale.TYPES[this.options.type];
+	this.dist = C.Scale.TYPES[this.options.name];
+    },
+    
+    /**
+     * Get string representation of this scale
+     */
+    toString: function(){
+	return this.options.root+" "+this.options.name;
+    },
+    
+    /**
+     * Set the root note of the scale
+     * @param {String} root
+     */
+    setRoot: function(root){
+	this.options.root=root;
+	return this;
+    },
+    
+    /** 
+     * Set/Change the scale name/type 
+     * 
+     * @param {String} name
+     */
+    setName: function(name){
+	this.options.name = name;
+	this.dist = C.Scale.TYPES[this.options.name];
+	return this;
     },
     
     /**
@@ -78,6 +105,30 @@ C.Scale = C.Class.extend({
 	}
 	
 	return notes;
+    },
+    
+    /**
+     * Get scale's name
+     * @return {String}
+     */
+    getName: function(){
+	return this.options.name;
+    },
+    
+    /**
+     * Get scale's root (attribute)
+     * @return {String}
+     */
+    getRoot: function(){
+	return this.options.root;
+    },
+    
+    /**
+     * Get scale's root (Note)
+     * @return {C.Note}
+     */
+    getRootNote: function(){
+	return new C.Note({note: this.options.root});
     }
 });
 

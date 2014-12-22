@@ -492,7 +492,8 @@ C.IStringInstrument = C.Instrument.extend({
     
     /**
      * Create full the fretboard, if applicable. Store
-     * the HTML elements on idx...
+     * the HTML elements on this.fretboard to be able to 
+     * clear without redrawing
      * 
      * @param {HTMLElement} el
      * @param {Object} opts
@@ -503,6 +504,9 @@ C.IStringInstrument = C.Instrument.extend({
      */
     drawInstrument: function(el,opts){
 	
+	if (this.fretboard!==undefined) return;
+	
+	C.DomUtil.empty (el);
 	var numStrings = this.getNumStrings();
 	var numFrets = this.options.numFrets;
 	
@@ -529,7 +533,7 @@ C.IStringInstrument = C.Instrument.extend({
 	    var clsExtra = "";
 	    if ( C.Util.objValue(opts, "changeSize", false))  clsExtra = " s"+(s+1);
 	    
-	    for (var f=1; f<numFrets+1; f++){
+	    for (var f=1; f<numFrets+2; f++){
 		idx[s][f] = C.DomUtil.create('td',cls+clsExtra,row);
 		idx[s][f].setAttribute("data-string",s);
 		idx[s][f].setAttribute("data-fret",f);
@@ -539,23 +543,27 @@ C.IStringInstrument = C.Instrument.extend({
 	
 	idx[numStrings] = [];
 	var row = C.DomUtil.create('tr','',t);
-	for (var f=0; f<numFrets+1; f++){
+	for (var f=0; f<numFrets+2; f++){
 	    idx[numStrings][f] = C.DomUtil.create('td',"g_fret_num",row);
-	    if ((f!=1 && f%2!=0 && f!=11) || f==12) idx[numStrings][f].innerText=f;
+	    // dot pattern...
+	    if ((f!=1 && f%2!=0 && f!=11 && f!=13) || f==12) idx[numStrings][f].innerText=f;
 	}
 	
 	el.appendChild(t);
 	
-	return idx;
+	this.fretboard = idx;
+	
+	return this;
     },
     
     /**
-     * Draw the whole scale on the fretboard. TODO: extend
-     * with boxes
+     * Draw the whole scale on the fretboard. 
+     * 
+     * TODO: extend with boxes
      */
-    drawScale: function(scale,el,opts){
-	C.DomUtil.empty (el);
-	var idx = this.drawInstrument(el,opts);
+    drawScale: function(scale,opts,el){
+	this.drawInstrument(el,opts);
+	var idx = this.fretboard;
 	var notes = scale.getNotes();
 	
 	for (var n=0; n<notes.length; n++) {
@@ -567,7 +575,7 @@ C.IStringInstrument = C.Instrument.extend({
 	    for (var s=0; s<this.getNumStrings(); s++) {
 		
 		// Get all positions of this not on this string
-		var pos = this.getFretsFor(notes[n],s,this.options.numFrets);
+		var pos = this.getFretsFor(notes[n],s,this.options.numFrets+1);
 		
 		// Add them
 		for (var p=0; p<pos.length; p++) {
@@ -578,6 +586,21 @@ C.IStringInstrument = C.Instrument.extend({
 	}
 	
 	return this;
+    },
+    
+    /**
+     * Clear the current scale if any
+     */
+    clearScale: function(){
+	var f = this.fretboard;
+	
+	if (!f) return;
+	
+	for (var i=0; i<f.length; i++){
+	    for (var j=0; j<f[i].length; j++){
+		C.DomUtil.empty(f[i][j]);
+	    }
+	}
     },
     
     drawChordOnInstrument: function(what,el,opts){

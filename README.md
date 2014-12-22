@@ -92,4 +92,39 @@ the formulas). At the moment the following are supported:
 
 ## Supported Scales
 
-TODO: When scales are implemented...
+Note: Formulas need to be confirmed...
+
+| Name | Interval Structure |
+|------|---------|
+| Major |  W, W, H, W, W, W, H |
+| Natural Minor |  W, H, W, W, H, W, W |
+| Major Pentatonic |  W, W, W+H, W, W+H |
+| Minor Pentatonic |  W+H, W, W, W+H, W |
+| Blues |  W+H, W, H, H, W+H, W |
+| Major Blues |  W, H, H, H, H, H, W, H, W |
+| Minor Blues |  W, H, W, H, H, H, W, W |
+| Ionian Mode |  W, W, H, W, W, W, H |
+| Dorian Mode |  W, H, W, W, W, H, W |
+| Phrygian Mode |  H, W, W, W, H, W, W |
+| Lydian Mode |  W, W, W, H, W, W, H |
+| Mixolydian Mode |  W, W, H, W, W, H, W |
+| Aeolian Mode |  W, H, W, W, H, W, W |
+| Locrian Mode |  H, W, W, H, W, W, W |
+| Harmonic Minor |  W, H, W, W, H, W+H, H |
+| Phrygian Dominant |  H, W+H, H, W, H, W, W |
+| Jazz Melodic Minor |  W, H, W, W, W, W, H |
+| Dorian b2 |  H, W, W, W, W, H, W |
+| Lydian Augmented |  W, W, W, W, H, W, H |
+| Lydian b7 |  W, W, W, H, W, H, W |
+| Mixoydian b13 |  W, W, H, W, H, W, W |
+| Locrian #2 |  W, H, W, H, W, W, W |
+| Super Locrian |  H, W, H, W, W, W, W |
+| Chromatic |  H, H, H, H, H, H, H, H, H, H, H, H |
+| Whole Tone |  W, W, W, W, W, W, W |
+| Dimished Whole Half |  W, H, W, H, W, H, W, H |
+| Dimished Half Whole |  H, W, H, W, H, W, H, W |
+| Hungarian Minor |  W, H, W+H, H, W+H, H |
+| Double Harmonic |  H, W+H, H, W, H, W+H, H |
+| Enigmatic |  W, W+H, W, W, W, H, H |
+| Japanese |  H, W+H, W, H, W, H |
+
