@@ -57,9 +57,9 @@ C.Instrument = C.Class.extend({
 	    th11: false,
 	    th13: false
 	};
-    
-	// Renderer
-	this.r = null;
+
+	
+	
     },
     
     getNumStrings: function(){
@@ -192,8 +192,11 @@ C.Instrument = C.Class.extend({
     
 <span id='C-Instrument-method-getStringRoot'>    /**
 </span>     * Return to root not for string s. If noPlayable is set
-     * it will not attampt to set playable position... This is
+     * it will not attempt to set playable position... This is
      * needed for getPlayableOffForString which causes a loop
+     * 
+     * NOTE: Do not cache root notes, cause then we need to clone
+     * them, which takes a lot longer than creating...
      */
     getStringRoot: function(s, noPlayable) {
 	var newNote = new C.Note({
@@ -331,9 +334,6 @@ C.Instrument = C.Class.extend({
     //--------------------------------
     // Plotting/GUI
     //--------------------------------
-    setRenderer: function(r){
-	this.r = r;
-    },
     
 <span id='C-Instrument-method-diagram'>    /**
 </span>     * Base of diagram, ensure that what is a chord representation
@@ -357,8 +357,15 @@ C.Instrument = C.Class.extend({
 	    what = this.c.pos[what];
 	}
 	
+	var t = C.Util.objValue(opts, &quot;type&quot;, &quot;html&quot;);
 	
-	return what;
+	switch (t) {
+	    case &quot;html&quot;:
+		return this.diagramHTML(what,el,opts);
+	    default:
+		throw new Error({'C.Instrument':'Diagram type &quot;'+t+'&quot; is not known...'}) 
+	}
+	
     },
     
 <span id='C-Instrument-method-diagramNext'>    /**

@@ -28,12 +28,26 @@ C.Scale = C.Class.extend({
 	type: &quot;Major&quot;
     },
     
+<span id='C-Scale-method-initialize'>    /**
+</span>     * Base init function. It will load the scale 
+     * distances and cache it 
+     * 
+     * @param {Object} options
+     */
     initialize: function (options) {
 	C.setOptions(this, options);
+	// Cache distances
+	this.dist = C.Scale.TYPES[this.options.type];
     },
     
-    // 1. Create a note (root)
-    // 2. Return the scaled/offseted note
+<span id='C-Scale-method-offset'>    /**
+</span>     * Get a note offset by f on the current scale and
+     * from the current root note. 'f' is in the formula
+     * format (ie. &quot;1&quot; or &quot;b5&quot;)
+     * 
+     * @param {String} f
+     * @return {C.Note}
+     */
     offset: function(f){
 	// Check for optional 1st
 	if (f[0]==&quot;(&quot;) {
@@ -50,18 +64,17 @@ C.Scale = C.Class.extend({
 	    off=1;
 	}
 	
-	var sc = C.Scale.TYPES[this.options.type];
 	
 	// Loop offset! 9ths/11ths
-	var oo = false;
-	if (f&gt;sc.length) {
-	    f=f%sc.length;
-	    oo=true;
+	var oo = 0;
+	if (f&gt;this.dist.length) {
+	    f=f%this.dist.length;
+	    oo=1; // FIXME:!Not exactly, assuming only 1 octave offset
 	}
 	
 	
-	for (var i=0; (i&lt;sc.length &amp;&amp; i&lt;f-1); i++) {
-	    off+=sc[i]*2;
+	for (var i=0; (i&lt;this.dist.length &amp;&amp; i&lt;f-1); i++) {
+	    off+=this.dist[i]*2;
 	}
 	
 	var n = new C.Note({note: this.options.root,octaveOffset: oo});

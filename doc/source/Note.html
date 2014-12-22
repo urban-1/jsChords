@@ -27,30 +27,53 @@ C.Note = C.Class.extend({
 	note: &quot;-&quot;,
 	
 	// Playable attributes
+	
 	duration: 1,		// time duration (sec?)
 	style: &quot;&quot;,		// bend &quot;b&quot;, vibrato &quot;~&quot;
 	styleAttr: &quot;&quot;,		// Style attribure: 1, 1/2, etc for bends,
-	octaveOffset:false,	// Used for 9ths +
+	octaveOffset:0,		// Used for 9ths +
 	playPos: -1	 	// Position on an instrument (comparison between instr cannot be done)
     },
     
-    
+<span id='C-Note-method-initialize'>    /**
+</span>     * Base init function, set the correct index 
+     * 
+     * @param {Object} options
+     */
     initialize: function (options) {
 	C.setOptions(this, options);
+	this.idx = C.Note.noteIndex(this.options.note);
     },
     
+<span id='C-Note-method-toString'>    /**
+</span>     * Return string representation of this note.
+     * 
+     * @return {String}
+     */
     toString: function(){
 	return this.options.note;
     },
     
+<span id='C-Note-method-setNote'>    /**
+</span>     * Change/set the note. Index will also be updated. 
+     * No other option will change
+     * 
+     * @param {String} note
+     * @return this
+     */
     setNote: function(note){
 	this.options.note = note;
+	this.idx = C.Note.noteIndex(note);
+	return this;
     },
     
 <span id='C-Note-method-offset'>    /**
 </span>     * Offest by off. Off is in half-tones, if step is given 
      * then it will off*step ie: step=2 (by tone)
-     * @chainable
+     * 
+     * @param {Number} off Offset steps
+     * @param {Number} step The step size (default 1 - half-tone)
+     * @return this
      */
     offset: function(off, step){
 	if (this.options.note==&quot;-&quot;) return this;
@@ -62,19 +85,28 @@ C.Note = C.Class.extend({
 	if (this.options.playPos!=-1)
 	    this.options.playPos+=off;
 	
-	var newIdx = (idx+off)%C.NOTES.length;
-	this.options.note = C.NOTES[newIdx];
+	this.idx = (idx+off)%C.NOTES.length;
+	this.options.note = C.NOTES[this.idx];
 	
 	return this;
     },
     
+<span id='C-Note-method-offsetNotes'>    /**
+</span>     * Offset by notes/steps on the C Major scale. Not used
+     * at the moment...
+     * 
+     * @param {Number} off Offset steps
+     * @return this
+     */
     offsetNotes: function(off){
 	if (off==0) return;
 	var idx2 = C.NOTES2.indexOf(this.options.note);
 	idx2 = (off + idx2)%C.NOTES2.length;
 	
-	var newIdx = C.NOTES.indexOf(C.NOTES2[idx2]);
-	this.options.note = C.NOTES[newIdx];
+	this.idx = C.NOTES.indexOf(C.NOTES2[idx2]);
+	this.options.note = C.NOTES[this.idx];
+	
+	return this
     },
     
 <span id='C-Note-method-offsetStr'>    /**
@@ -99,30 +131,75 @@ C.Note = C.Class.extend({
 	
     },
     
+<span id='C-Note-method-getIdx'>    /**
+</span>     * Get not index. If useOffset is true then 
+     * the number of offset octaves will be added
+     * too.
+     * 
+     * @param {Boolean} useOffset
+     * @return {Number} Note offset
+     */
     getIdx: function(useOffset) {
-	var off = C.Note.noteIndex(this.options.note);
-	if (useOffset &amp;&amp; this.options.octaveOffset) off+=C.NOTES.length;
+	var off = this.idx;
+	if (useOffset &amp;&amp; this.options.octaveOffset&gt;0) 
+	    off+=this.options.octaveOffset*C.NOTES.length;
 	return off;
-    }
+    },
+    
+<span id='C-Note-method-clone'>    /**
+</span>     * Clone a Note. Avoid using deep copy C.Util.clone...
+     * 
+     * @return {C.Note}
+     */
+    clone: function(){
+	var c = new C.Note({note: this.options.note});
+	
+	for (var o in this.options){
+	    if (o==&quot;note&quot;) continue;
+	    c.options[o] = this.options[o];
+	}
+	
+	return c;
+    },
 
 });
 
 <span id='C-Note-static-method-noteIndex'>/**
-</span> * @static
+</span> * Get index for a given note name 
+ * 
+ * @param {String} note
+ * @return {Number} Index
+ * @static
  */
 C.Note.noteIndex = function(note){
+    
+    if (note[1]==&quot;b&quot;) {
+	note = note[0];
+	var idx = C.NOTES.indexOf(note)-1;
+	if (idx&lt;0) idx = C.NOTES.length -idx;
+	return idx;
+    }
+    
     return C.NOTES.indexOf(note);
 };
 
 <span id='C-Note-static-method-indexNote'>/**
-</span> * @static
+</span> * Get note name given an index
+ * 
+ * @param {Number} index
+ * @return {String} Note name
+ * @static
  */
 C.Note.indexNote = function(idx){
     return C.NOTES[idx];
 };
 
 <span id='C-Note-static-method-byIdx'>/**
-</span> * @static
+</span> * Create a C.Note instance by a given index
+ * 
+ * @param {Number} idx
+ * @return {C.Note}
+ * @static
  */
 C.Note.byIdx = function(idx){
     return new C.Note({note: C.NOTES[idx]});

@@ -31,14 +31,7 @@ C.IRenderer = C.Class.extend({
 })
 
 C.IRenderer.byType = function(opts){
-    var t = C.Util.objValue(opts, &quot;type&quot;, &quot;html&quot;);
-    
-    switch (t) {
-	case &quot;html&quot;:
-	    return new C.RendererHtml(opts);
-	default:
-	    throw new Error({'C.IRenderer':'Renderer &quot;'+t+'&quot; is not known...'}) 
-    }
+
 }
 </pre>
 </body>

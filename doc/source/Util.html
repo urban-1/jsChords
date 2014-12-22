@@ -28,8 +28,15 @@
  * @class C.Util
  */
 C.Util = {
-<span id='C-Util-method-extend'>    // extend an object with properties of one or more other objects
-</span>    extend: function (dest) {
+<span id='C-Util-static-method-extend'>    /**
+</span>     * Extend an object with properties of one or more other objects
+     * 
+     * @param {Object} dest Object to be extended
+     * @param {Object} classes/instances One or more other objects to extend from
+     * @return {Object} Altered dest
+     * @static
+     */
+    extend: function (dest) {
 	var i, j, len, src;
 	
 	for (j = 1, len = arguments.length; j &lt; len; j++) {
@@ -41,8 +48,13 @@ C.Util = {
 	return dest;
     },
     
-<span id='C-Util-property-create'>    // create an object from a given prototype
-</span>    create: Object.create || (function () {
+<span id='C-Util-static-method-create'>    /**
+</span>     * Create an object from a given prototype
+     * 
+     * @return {Object}
+     * @static
+     */
+    create: Object.create || (function () {
 	function F() {}
 	return function (proto) {
 	    F.prototype = proto;
@@ -50,8 +62,13 @@ C.Util = {
 	};
     })(),
     
-<span id='C-Util-method-setOptions'>    /**
-</span>     * set options to an object, inheriting parent's options as well
+<span id='C-Util-static-method-setOptions'>    /**
+</span>     * Set options to an object, inheriting parent's options as well
+     * 
+     * @param {Object} obj
+     * @param {Object} options
+     * @return {Object} obj.options
+     * @static
      */
     setOptions: function (obj, options) {
 	if (!obj.hasOwnProperty('options')) {
@@ -64,12 +81,31 @@ C.Util = {
     },
     
     
-<span id='C-Util-method-objNull'>    objNull: function(obj, key){
-</span>	return (C.Util.objValue(obj,key,undefined)===undefined)
+<span id='C-Util-static-method-objNull'>    /**
+</span>     * Check (and return true) if a propery of an object 
+     * is null. Key is given in string format &quot;xxx.yyy.zzz&quot;
+     * 
+     * @param {Object} obj 
+     * @param {String} key
+     * @return {Boolean}
+     * @static
+     */
+    objNull: function(obj, key){
+	return (C.Util.objValue(obj,key,undefined)===undefined)
     },
     
-<span id='C-Util-method-objValue'>    objValue: function(obj, key, defVal){
-</span>	if (!obj) return defVal;
+<span id='C-Util-static-method-objValue'>    /**
+</span>     * Return the value of a propery of an object. If it is null, the
+     * defVal will be returned. Key is given in string format &quot;xxx.yyy.zzz&quot;
+     * 
+     * @param {Object} obj 
+     * @param {String} key
+     * @param {Object} defVal
+     * @return Property value or defVal
+     * @static
+     */
+    objValue: function(obj, key, defVal){
+	if (!obj) return defVal;
 	var keys = key.split(&quot;.&quot;), value;
 	for(var i = 0; i &lt; keys.length; i++){
 	    if(typeof obj[keys[i]] !== &quot;undefined&quot;){
@@ -81,26 +117,48 @@ C.Util = {
 	return value;
     },
     
-<span id='C-Util-method-objIsEmpty'>    objIsEmpty: function(obj){
-</span>	for(var key in obj) {
+<span id='C-Util-static-method-objIsEmpty'>    /**
+</span>     * Return true if an object is empty 
+     * 
+     * @param {Object} obj 
+     * @return {Boolean}
+     * @static
+     */
+    objIsEmpty: function(obj){
+	for(var key in obj) {
 	    if(obj.hasOwnProperty(key)) return false;
 	}
 	
 	return true;
     },
     
-<span id='C-Util-method-trim'>    // trim whitespace from both sides of a string
-</span>    trim: function (str) {
+<span id='C-Util-static-method-trim'>    /**
+</span>     * Trim whitespace from both sides of a string
+     * @param {String} str 
+     * @return {String}
+     * @static
+     */
+    trim: function (str) {
 	return str.trim ? str.trim() : str.replace(/^\s+|\s+$/g, '');
     },
     
-<span id='C-Util-method-splitWords'>    // split a string into words
-</span>    splitWords: function (str) {
+<span id='C-Util-static-method-splitWords'>    /**
+</span>     * Split a string into words
+     * 
+     * @param {String} str 
+     * @return {Array} of Strings...
+     * @static
+     */
+    splitWords: function (str) {
 	return C.Util.trim(str).split(/\s+/);
     },
     
-<span id='C-Util-method-clone'>    /**
+<span id='C-Util-static-method-clone'>    /**
 </span>     * Clone an object instead of pointing to it!
+     * 
+     * @param {Object/Array} o
+     * @return {Object/Array}
+     * @static
      */
     clone: function(o) {
 	if(typeof(o) != 'object' || o == null) return o;
@@ -115,7 +173,7 @@ C.Util = {
 	    if (o[&quot;map&quot;] == o[i]){
 		newO[i] = o[i];
 	    }else if (o[i].parentNode == undefined){
-		newO[i] = clone(o[i]);
+		newO[i] = C.Util.clone(o[i]);
 	    }else{
 		newO[i] = o[i].cloneNode(false);
 	    }
@@ -125,6 +183,7 @@ C.Util = {
     
 <span id='C-Util-static-method-getQueryString'>    /**
 </span>     * Parse the URL query string and return it as object
+     * @return {Object} 
      * @static
      */
     getQueryString: function() {
@@ -151,20 +210,20 @@ C.Util = {
 	return query_string;
     }
 
-    
-
 }
 
 
-<span id='C-Util-static-method-setOptions'>/**
+<span id='C-static-method-setOptions'>/**
 </span> * Alias to C.Util.setOptions
  * @method setOptions
+ * @member C
  * @static
  */
 C.setOptions = C.Util.setOptions;
-<span id='C-Util-static-method-extend'>/**
+<span id='C-static-method-extend'>/**
 </span> * Alias to C.Util.extend
  * @method extend
+ * @member C
  * @static
  */
 C.extend     = C.Util.extend;
