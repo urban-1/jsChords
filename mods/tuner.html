@@ -1,0 +1,225 @@
+<html>
+<head>
+    <script type='text/javascript' src='../jschords-src.js'></script>
+<script>
+    // Define the set of test frequencies that we'll use to analyze microphone data.
+    var test_frequencies = C.getAllFreq();
+    var correlation_worker,audio;
+    var magnitudes;
+    var dataAnalog;
+    var allTimesMax =-10;
+    var MSSAMPLE = 100;
+    
+    window.addEventListener("load", onLoad);
+    
+    function onLoad()
+    {
+	audio = new C.Audio({
+	    success: use_stream
+	});
+	correlation_worker = new Worker("tunerWorker.js");
+	correlation_worker.addEventListener("message", interpret_correlation_result);
+	vis(C.DomUtil.get("canvasF"))
+	visAnal(C.DomUtil.get("canvasA"))
+    }
+    
+    
+    function use_stream(stream)
+    {
+	    var audio_context = audio.getCtx();
+	    var microphone = audio_context.createMediaStreamSource(stream);
+	    var script_processor = audio_context.createScriptProcessor(1024, 1, 1);
+	    script_processor.connect(audio_context.destination);
+	    microphone.connect(script_processor);
+	    
+	    var buffer = [];
+	    var minBufLen = MSSAMPLE * audio_context.sampleRate / 1000
+	    var recording = true;
+	    // Need to leak this function into the global namespace so it doesn't get
+	    // prematurely garbage-collected.
+	    // http://lists.w3.org/Archives/Public/public-audio/2013JanMar/0304.html
+	    window.capture_audio = function(event)
+	    {
+		    if (!recording)
+			    return;
+		    buffer = buffer.concat(Array.prototype.slice.call(event.inputBuffer.getChannelData(0)));
+		    // Stop recording after MSSAMPLE.
+		    if (buffer.length > minBufLen)
+		    {
+			    recording = false;
+			    correlation_worker.postMessage
+			    (
+				    {
+					    "timeseries": buffer,
+					    "test_frequencies": test_frequencies,
+					    "sample_rate": audio_context.sampleRate
+				    }
+			    );
+			    dataAnalog = buffer.slice(0);
+			    buffer = [];
+			    // Urban: sliding window ?? Keep middle values...?!
+// 			    buffer=buffer.splice(minBufLen/1.5);
+			    
+			    setTimeout(function() { recording = true; }, 2);
+		    }
+	    };
+	    script_processor.onaudioprocess = window.capture_audio;
+    }
+    
+    
+    
+    function interpret_correlation_result(event)
+    {
+	    var timeseries = event.data.timeseries;
+	    var frequency_amplitudes = event.data.frequency_amplitudes;
+	    // Compute the (squared) magnitudes of the complex amplitudes for each
+	    // test frequency.
+	    magnitudes = frequency_amplitudes.map(function(z) { return /*Math.sqrt*/([0] * z[0] + z[1] * z[1]); });
+	    
+	    // Find the maximum in the list of magnitudes.
+	    var maximum_index = -1;
+	    var maximum_magnitude = 0;
+	    var avg_freq = 0;
+	    var sum_mag = 0;
+	    for (var i = 0; i < magnitudes.length; i++)
+	    {
+		avg_freq+=test_frequencies[i].frequency * magnitudes[i];
+		sum_mag+=magnitudes[i];
+		
+		if (magnitudes[i] <= maximum_magnitude)
+		    continue;
+		maximum_index = i;
+		maximum_magnitude = magnitudes[i];
+	    }
+	    
+	    
+	    // Compute the average magnitude. We'll only pay attention to frequencies
+	    // with magnitudes significantly above average.
+// 	    var average = magnitudes.reduce(function(a, b) { return a + b; }, 0) / magnitudes.length;
+	    var average = sum_mag/magnitudes.length;
+	    
+	    var avg_freq=avg_freq/sum_mag;
+	    
+	    var confidence = maximum_magnitude / average;
+	    var confidence_threshold = 10; // empirical, arbitrary.
+	    if (confidence > confidence_threshold)
+	    {
+		var dominant_frequency = test_frequencies[maximum_index];
+		document.getElementById("note-name").textContent = dominant_frequency.name;
+		document.getElementById("frequency").textContent = dominant_frequency.frequency;
+		document.getElementById("avgf").textContent = avg_freq;
+		
+		var absDiff = Math.abs(avg_freq-dominant_frequency.frequency);
+		if (absDiff<confidence_threshold)
+		    document.getElementById("dir").textContent = "O";
+		else if (avg_freq<dominant_frequency.frequency) 
+		    document.getElementById("dir").textContent = "<";
+		else 
+		    document.getElementById("dir").textContent = ">";
+			
+	    }
+	    
+	    /*if (allTimesMax<maximum_magnitude) */allTimesMax=maximum_magnitude;
+	    
+// 	    vis(C.DomUtil.get("canvasF"))
+    }
+    
+    
+    function vis(el){
+	var WIDTH = el.width;
+	var HEIGHT = el.height;
+
+	var canvasCtx = el.getContext("2d");
+	canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+
+	function draw() {
+	    drawVisual = requestAnimationFrame(draw);
+	    if (!magnitudes) return;
+	    
+
+	    canvasCtx.fillStyle = 'rgb(0, 0, 0)';
+	    canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+
+	    var barWidth = (WIDTH / magnitudes.length)-1;
+	    var barHeight;
+	    var x = 0;
+	    for(var i = 0; i < magnitudes.length; i++) {
+		if (magnitudes[i]==0) continue;
+		    barHeight = magnitudes[i]/allTimesMax*HEIGHT;
+
+		canvasCtx.fillStyle = 'red';
+		canvasCtx.fillRect(x,HEIGHT-barHeight,barWidth,barHeight);
+
+		x += barWidth + 1;
+	    }
+	};
+
+	draw();
+    }
+    
+        
+    function visAnal(el){
+	var WIDTH = el.width;
+	var HEIGHT = el.height;
+
+	var canvasCtx = el.getContext("2d");
+	canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+
+
+	function draw2() {
+	    requestAnimationFrame(draw2);
+	    if (!dataAnalog) return;
+
+	    canvasCtx.fillStyle = 'rgb(200, 200, 200)';
+	    canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+
+	    canvasCtx.lineWidth = 2;
+	    canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
+
+	    canvasCtx.beginPath();
+
+	    var sliceWidth = WIDTH * 1.0 / dataAnalog.length;
+	    var x = 0;
+
+	    for(var i = 0; i < dataAnalog.length; i++) {
+	
+		var v = dataAnalog[i]*10;
+		var y = v * HEIGHT/2 + HEIGHT/2;
+
+		if(i === 0) {
+		    canvasCtx.moveTo(x, y);
+		} else {
+		    canvasCtx.lineTo(x, y);
+		}
+
+		x += sliceWidth;
+	    }
+
+	    canvasCtx.lineTo(WIDTH, HEIGHT/2);
+	    canvasCtx.stroke();
+	};
+
+	draw2();
+    }
+</script>
+</head>
+
+<body>
+<p>It sounds like you're playing...</p>
+<h1 id="note-name"></h1>
+<span id="dir"></span>
+<p>
+	<span>Note Frequency:</span>
+	<span id="frequency"></span>
+	<span> Current:</span>
+	<span id="avgf"></span>
+</p>
+<p>
+    <canvas id="canvasF" style="width:500px; height: 80px;"></canvas>
+    <canvas id="canvasA" style="width:500px; height: 80px;"></canvas>
+</p>
+<hr>
+<button id="play-note">start/stop an E note</button>
+</body>
+</html>
+ 

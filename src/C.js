@@ -57,3 +57,30 @@ C.NOTESIoanna = ["Do", "Do+", "Re", "Re+", "Mi", "Fa", "Fa+", "Sol", "Sol+", "La
 // function lg(a){console.log(a)}
 // Shortcut for console.log but may not work with IE!
 lg = /*console.log =*/ Function.prototype.bind.call(console.log,console);
+
+
+/**
+ * Get a notes frequency
+ * http://jonathan.bergknoff.com/journal/making-a-guitar-tuner-html5
+ * 
+ * @param {Number} referenceFreq
+ * @param {Number} halfToneOffset
+ * @return {Number} frequency
+ * @method
+ * @static
+ */
+C.getFreq = function(referenceFreq, halfToneOffset){
+    return (referenceFreq * Math.pow(2, (halfToneOffset/12)))
+};
+
+
+C.getAllFreq = function(){
+    var fs = [];
+    
+    for (i in C.Note.F) {
+	if (i[1]=="b") continue;
+	fs.push( {frequency: C.Note.F[i], name: i});
+    };
+    
+    return fs;
+};

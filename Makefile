@@ -5,6 +5,7 @@ JSFILES=\
 	src/Util.js \
 	src/Class.js \
 	src/Note.js \
+	src/NoteFreq.js \
 	src/Chord.js \
 	src/ChordTypes.js \
 	src/Instrument.js \
@@ -13,16 +14,17 @@ JSFILES=\
 	src/ScaleTypes.js \
 	
 GUIFILES=$(wildcard src/gui/*.js)
-INSTRUMENTS= $(wildcard src/instruments/*.js);
+AUDIO=$(wildcard src/audio/*.js)
+INSTRUMENTS= $(wildcard src/instruments/*.js)
 
 .PHONY: all jschords auto
 
 all: jschords
 	
 
-jschords: $(JSFILES) $(GUIFILES) $(INSTRUMENTS)
+jschords: $(JSFILES) $(GUIFILES) $(INSTRUMENTS) $(AUDIO)
 	cat $^ > jschords-src.js
-
+	
 # Auto build, echo . to sterr if you need feedback...
 auto: 
 	@while [ true ]; \

@@ -144,6 +144,19 @@ C.Note = C.Class.extend({
 	
 	return c;
     },
+    
+    /**
+     * Return this note's F in a given octave
+     */
+    getFreq: function(octave) {
+	
+	if (octave===undefined) 
+	    octave=0;
+	
+	var note=this.options.note+""+octave;
+	
+	return C.Note.F[note]
+    }
 
 });
 
@@ -187,3 +200,15 @@ C.Note.indexNote = function(idx){
 C.Note.byIdx = function(idx){
     return new C.Note({note: C.NOTES[idx]});
 };
+
+
+
+/**
+ * Constant "Concert A" frequency in Hz
+ * 
+ * @var
+ * @static
+ */
+C.Note.CONCERTA = 440;
+
+
