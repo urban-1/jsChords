@@ -63,6 +63,8 @@ lg = /*console.log =*/ Function.prototype.bind.call(console.log,console);
  * Get a notes frequency
  * http://jonathan.bergknoff.com/journal/making-a-guitar-tuner-html5
  * 
+ * F = Fo * 2^(n/12)
+ * 
  * @param {Number} referenceFreq
  * @param {Number} halfToneOffset
  * @return {Number} frequency
@@ -73,6 +75,14 @@ C.getFreq = function(referenceFreq, halfToneOffset){
     return (referenceFreq * Math.pow(2, (halfToneOffset/12)))
 };
 
+/**
+ * 2^(n/12) = F/Fo <=>
+ * n/12 = log2(F/Fo) <=>
+ * n = 12 * log2(F/Fo)
+ */
+C.getFreqOffset = function(noteFreq, currentFreq){
+    return 12*Math.log2(currentFreq/noteFreq)
+};
 
 C.getAllFreq = function(){
     var fs = [];

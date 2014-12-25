@@ -8,7 +8,8 @@
     var data;
     var allTimesMax =-10;
     var MSSAMPLE = 100;
-    var CONFTHRES = 30;
+    var CONFTHRES = 10;
+    var SIGNALAMP = 0;
     
     window.addEventListener("load", onLoad);
     
@@ -82,16 +83,18 @@
 	    
 	    var confidence = fstats.max / fstats.avgM;
 // 	    if (confidence>CONFTHRES) lg(confidence,fstats.max,fstats.avgM)
-	    if (confidence > CONFTHRES && data.time.stats.amp > 0.05)
+	    if (confidence > CONFTHRES && data.time.stats.amp > SIGNALAMP)
 	    {
 		var dominant_frequency = test_frequencies[fstats.maxIdx];
 		document.getElementById("note-name").textContent = dominant_frequency.name;
 		document.getElementById("frequency").textContent = dominant_frequency.frequency;
 		document.getElementById("avgf").textContent = fstats.avgF;
 		
-		var absDiff = Math.abs(fstats.avgF-dominant_frequency.frequency);
+// 		var absDiff = Math.abs(fstats.avgF-dominant_frequency.frequency);
+		var absDiff = C.getFreqOffset(dominant_frequency.frequency, fstats.avgF);
+		lg(absDiff)
 		// FIXME: calc note spacing!
-		if (absDiff<10)
+		if (absDiff<0.3)
 		    document.getElementById("dir").textContent = "O";
 		else if (fstats.avgF<dominant_frequency.frequency) 
 		    document.getElementById("dir").textContent = "<";
@@ -159,7 +162,7 @@
 	    canvasCtx.fillStyle = 'rgb(200, 200, 200)';
 	    canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
 
-	    canvasCtx.lineWidth = 2;
+	    canvasCtx.lineWidth = 1;
 	    canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
 
 	    canvasCtx.beginPath();
@@ -187,6 +190,26 @@
 
 	draw2();
     }
+    
+// Unnecessary addition of button to play an E note.
+var note_context = new AudioContext();
+var note_node = note_context.createOscillator();
+var gain_node = note_context.createGain();
+note_node.frequency.value = C.Note.F["E4"]; // E, ~82.41 Hz.
+gain_node.gain.value = 0;
+note_node.connect(gain_node);
+gain_node.connect(note_context.destination);
+note_node.start();
+var playing = false;
+function toggle_playing_note()
+{
+	lg(note_node.frequency.value)
+	playing = !playing;
+	if (playing)
+		gain_node.gain.value = 0.5;
+	else
+		gain_node.gain.value = 0;
+}
 </script>
 </head>
 
@@ -202,11 +225,12 @@
 </p>
 <p>
     <canvas id="canvasF" style="width:500px; height: 80px;"></canvas>
+    <br/>
     <canvas id="canvasA" style="width:500px; height: 80px;"></canvas>
     <div id='ddata'></div>
 </p>
 <hr>
-<button id="play-note">start/stop an E note</button>
+<button id="play-note" onclick='toggle_playing_note()'>start/stop note</button>
 </body>
 </html>
  
