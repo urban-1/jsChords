@@ -116,7 +116,6 @@
 		
 		var halfToneDist = C.getFreqOffset(dominant_frequency.frequency, avgF);
 		halfToneDist=Math.abs(halfToneDist);
-		lg(halfToneDist)
 		
 		// FIXME: calc note spacing!
 		if (halfToneDist<=HALFTONEGOOD)

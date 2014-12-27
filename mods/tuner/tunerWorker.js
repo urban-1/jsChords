@@ -1,7 +1,4 @@
-/**
- * 
- * http://jonathan.bergknoff.com/journal/making-a-guitar-tuner-html5
- */
+
 self.onmessage = function(event)
 {
 	var timeseries = event.data.timeseries;
@@ -11,6 +8,11 @@ self.onmessage = function(event)
 	self.postMessage(data);
 };
 
+
+/**
+ * 
+ * http://jonathan.bergknoff.com/journal/making-a-guitar-tuner-html5
+ */
 function anal(timeseries, test_frequencies, sample_rate)
 {
 	// 2pi * frequency gives the appropriate period to sine.
