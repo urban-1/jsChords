@@ -1,16 +1,13 @@
-<html>
-<head>
-    <script type='text/javascript' src='../jschords-src.js'></script>
-<script>
-    // Define the set of test frequencies that we'll use to analyze microphone data.
+ 
+ // Define the set of test frequencies that we'll use to analyze microphone data.
     var test_frequencies = C.getAllFreq();
     var correlation_worker,audio;
     var data;
     var allTimesMax =-10;
     var MSSAMPLE = 100;
     var CONFTHRES = 10;
-    var SIGNALAMP = 0;
-    var HALFTONEGOOD = 0.3;
+    var SIGNALAMP = 0.05;
+    var HALFTONEGOOD = 0.1;
     
     window.addEventListener("load", onLoad);
     
@@ -68,6 +65,29 @@
 	    script_processor.onaudioprocess = window.capture_audio;
     }
     
+    function calcFinOctave(){
+	    var fstats = data.frequency.stats;
+	    
+	    var mLen = data.frequency.magnitudes.length;
+	    var mag = data.frequency.magnitudes;
+	    
+	    var avgFinOctave = 0;
+	    var sumMinOctave = 0;
+	    var notesLen = C.NOTES.length;
+	    var octStart = notesLen * (parseInt(fstats.maxIdx/notesLen))
+	    
+	    // Loop only for this octave! Do not calc HARMONICS 
+	    // or noise in other bandwidth ranges
+	    for (var f=octStart; f<octStart+notesLen; f++) {
+		
+		var frequency = test_frequencies[f].frequency;
+		
+		avgFinOctave+=frequency * mag[f];
+		sumMinOctave+=mag[f];
+	    }
+	    
+	    data.frequency.stats.avgFinOctave = avgFinOctave/sumMinOctave;
+    }
     
     
     function interpret_correlation_result(event)
@@ -81,22 +101,27 @@
 // 	    var average = magnitudes.reduce(function(a, b) { return a + b; }, 0) / magnitudes.length;
 	    var fstats = data.frequency.stats;
 	    
+	    calcFinOctave();
+	    
 	    
 	    var confidence = fstats.max / fstats.avgM;
+	    var avgF = fstats.avgFinOctave;
 // 	    if (confidence>CONFTHRES) lg(confidence,fstats.max,fstats.avgM)
 	    if (confidence > CONFTHRES && data.time.stats.amp > SIGNALAMP)
 	    {
 		var dominant_frequency = test_frequencies[fstats.maxIdx];
 		document.getElementById("note-name").textContent = dominant_frequency.name;
 		document.getElementById("frequency").textContent = dominant_frequency.frequency;
-		document.getElementById("avgf").textContent = fstats.avgF;
+		document.getElementById("avgf").textContent = avgF;
 		
-		var halfToneDist = C.getFreqOffset(dominant_frequency.frequency, fstats.avgF);
+		var halfToneDist = C.getFreqOffset(dominant_frequency.frequency, avgF);
+		halfToneDist=Math.abs(halfToneDist);
+		lg(halfToneDist)
 		
 		// FIXME: calc note spacing!
 		if (halfToneDist<=HALFTONEGOOD)
 		    document.getElementById("dir").textContent = "O";
-		else if (fstats.avgF<dominant_frequency.frequency) 
+		else if (avgF<dominant_frequency.frequency) 
 		    document.getElementById("dir").textContent = "<";
 		else 
 		    document.getElementById("dir").textContent = ">";
@@ -126,6 +151,7 @@
 
 	    canvasCtx.fillStyle = 'rgb(0, 0, 0)';
 	    canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+	    drawFs(el);
 
 	    var barWidth = (WIDTH / magnitudes.length)-1;
 	    var barHeight;
@@ -144,6 +170,40 @@
 	draw();
     }
     
+    function drawFs(el){
+	var WIDTH = el.width;
+	var HEIGHT = el.height;
+
+	var canvasCtx = el.getContext("2d");
+	
+	
+	var barWidth = 1;
+	var barWidth2 = (WIDTH / test_frequencies.length)-1;
+	
+	var min = test_frequencies[0].frequency
+	var max = test_frequencies[test_frequencies.length-1].frequency
+	// Bandwidth
+	var bw = max-min;
+	    
+	for(var i = 0; i < test_frequencies.length; i++) {
+	    var f = test_frequencies[i].frequency;
+	    var n = test_frequencies[i].name;
+	    if (n[1]=="#") {
+		continue;
+	    }
+	    var color = "blue";
+	    if ((i%12)==0) color = "yellow";
+	    
+	    
+	    
+	    canvasCtx.fillStyle = color;
+	    // We dont plot in scale (lower Fs are too dense)
+// 	    canvasCtx.fillRect((f-min)*WIDTH/bw,0,barWidth,HEIGHT);
+	    canvasCtx.fillRect(i*(barWidth2+1),0,barWidth2,HEIGHT);
+	    
+	}
+    }
+    
         
     function visAnal(el){
 	var WIDTH = el.width;
@@ -157,6 +217,7 @@
 	function draw2() {
 	    requestAnimationFrame(draw2);
 	    var dataAnalog = ( data ) ? data.timeseries : false;
+	    
 	    if (!dataAnalog) return;
 
 	    canvasCtx.fillStyle = 'rgb(200, 200, 200)';
@@ -172,7 +233,7 @@
 
 	    for(var i = 0; i < dataAnalog.length; i++) {
 	
-		var v = dataAnalog[i]*10;
+		var v = dataAnalog[i];
 		var y = v * HEIGHT/2 + HEIGHT/2;
 
 		if(i === 0) {
@@ -210,27 +271,3 @@ function toggle_playing_note()
 	else
 		gain_node.gain.value = 0;
 }
-</script>
-</head>
-
-<body>
-<p>It sounds like you're playing...</p>
-<h1 id="note-name"></h1>
-<span id="dir"></span>
-<p>
-	<span>Note Frequency:</span>
-	<span id="frequency"></span>
-	<span> Current:</span>
-	<span id="avgf"></span>
-</p>
-<p>
-    <canvas id="canvasF" style="width:500px; height: 80px;"></canvas>
-    <br/>
-    <canvas id="canvasA" style="width:500px; height: 80px;"></canvas>
-    <div id='ddata'></div>
-</p>
-<hr>
-<button id="play-note" onclick='toggle_playing_note()'>start/stop note</button>
-</body>
-</html>
- 

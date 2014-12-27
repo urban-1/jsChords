@@ -1,4 +1,7 @@
- 
+/**
+ * 
+ * http://jonathan.bergknoff.com/journal/making-a-guitar-tuner-html5
+ */
 self.onmessage = function(event)
 {
 	var timeseries = event.data.timeseries;
@@ -24,10 +27,10 @@ function anal(timeseries, test_frequencies, sample_rate)
 	
 	// frequency statistics
 	var fstats = {
-	    max: -100000,
-	    maxIdx: -1,
-	    avgF: 0,
-	    avgM: 0
+	    max: -100000,	// Max F
+	    maxIdx: -1,		// Max F index
+	    avgF: 0,		// Full bandwidth average
+	    avgM: 0		// Avg magnitude
 	};
 	
 	var tstats = {

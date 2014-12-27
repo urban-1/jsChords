@@ -1,0 +1,30 @@
+<html>
+<head>
+    <script type='text/javascript' src='../../jschords-src.js'></script>
+    <script type='text/javascript' src='tuner.js'></script>
+<script>
+   
+</script>
+</head>
+
+<body>
+<p>It sounds like you're playing...</p>
+<h1 id="note-name"></h1>
+<span id="dir"></span>
+<p>
+	<span>Note Frequency:</span>
+	<span id="frequency"></span>
+	<span> Current:</span>
+	<span id="avgf"></span>
+</p>
+<p>
+    <canvas id="canvasF" style="width:500px; height: 80px;"></canvas>
+    <br/>
+    <canvas id="canvasA" style="width:500px; height: 80px;"></canvas>
+    <div id='ddata'></div>
+</p>
+<hr>
+<button id="play-note" onclick='toggle_playing_note()'>start/stop note</button>
+</body>
+</html>
+ 
