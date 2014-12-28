@@ -15,20 +15,58 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='C-Scale-TYPES'>/**
+  <pre class="prettyprint lang-js"><span id='C-Scale-static-css_var-TYPES'>/**
 </span> * Full credit to: :( ?
  * 
  * Total: 
  * 
  * @static
  * @member C.Scale
+ * @var
  */
 C.Scale.TYPES = new Array(); 
 
 C.Scale.TYPES[&quot;Major&quot;]			= [ 1, 1, .5, 1, 1, 1, .5 ];
 C.Scale.TYPES[&quot;Natural Minor&quot;]		= [ 1, .5, 1, 1, .5, 1, 1 ];
+
 C.Scale.TYPES[&quot;Major Pentatonic&quot;]	= [ 1, 1, 1.5, 1, 1.5 ];
 C.Scale.TYPES[&quot;Minor Pentatonic&quot;]	= [ 1.5, 1, 1, 1.5, 1 ]; 
-</pre>
+C.Scale.TYPES[&quot;Blues&quot;]			= [ 1.5, 1, .5, .5, 1.5, 1 ];
+C.Scale.TYPES[&quot;Major Blues&quot;]		= [ 1, .5, .5, .5, .5, .5, 1, .5, 1 ]; 
+C.Scale.TYPES[&quot;Minor Blues&quot;]		= [ 1, .5, 1, .5, .5, .5, 1, 1 ]; 
+
+// Shifting!
+C.Scale.TYPES[&quot;Ionian Mode&quot;]		= [ 1, 1, .5, 1, 1, 1, .5 ];
+C.Scale.TYPES[&quot;Dorian Mode&quot;]		= [ 1, .5, 1, 1, 1, .5, 1 ];
+C.Scale.TYPES[&quot;Phrygian Mode&quot;]		= [ .5, 1, 1, 1, .5, 1, 1 ];
+C.Scale.TYPES[&quot;Lydian Mode&quot;]		= [ 1, 1, 1, .5, 1, 1, .5 ];
+C.Scale.TYPES[&quot;Mixolydian Mode&quot;]	= [ 1, 1, .5, 1, 1, .5, 1 ];
+C.Scale.TYPES[&quot;Aeolian Mode&quot;]		= [ 1, .5, 1, 1, .5, 1, 1 ];
+C.Scale.TYPES[&quot;Locrian Mode&quot;]		= [ .5, 1, 1, .5, 1, 1, 1 ];
+
+
+C.Scale.TYPES[&quot;Harmonic Minor&quot;]		= [ 1, .5, 1, 1, .5, 1.5, .5 ];
+C.Scale.TYPES[&quot;Phrygian Dominant&quot;]	= [ .5, 1.5, .5, 1, .5, 1, 1 ];
+
+C.Scale.TYPES[&quot;Jazz Melodic Minor&quot;]	= [ 1, .5, 1, 1, 1, 1, .5 ];
+C.Scale.TYPES[&quot;Dorian b2&quot;]		= [ .5, 1, 1, 1, 1, .5, 1 ];
+C.Scale.TYPES[&quot;Lydian Augmented&quot;]	= [ 1, 1, 1, 1, .5, 1, .5 ];
+C.Scale.TYPES[&quot;Lydian b7&quot;]		= [ 1, 1, 1, .5, 1, .5, 1 ];
+C.Scale.TYPES[&quot;Mixoydian b13&quot;]		= [ 1, 1, .5, 1, .5, 1, 1 ];
+C.Scale.TYPES[&quot;Locrian #2&quot;]		= [ 1, .5, 1, .5, 1, 1, 1 ];
+C.Scale.TYPES[&quot;Super Locrian&quot;]		= [ .5, 1, .5, 1, 1, 1, 1 ];
+
+
+
+C.Scale.TYPES[&quot;Chromatic&quot;]		= [ .5, .5, .5, .5, .5, .5, .5, .5, .5, .5, .5, .5 ];
+C.Scale.TYPES[&quot;Whole Tone&quot;]		= [ 1, 1, 1, 1, 1, 1, 1 ];
+C.Scale.TYPES[&quot;Dimished Whole Half&quot;]	= [ 1, .5, 1, .5, 1, .5, 1, .5 ];
+C.Scale.TYPES[&quot;Dimished Half Whole&quot;]	= [ .5, 1, .5, 1, .5, 1, .5, 1 ];
+
+
+C.Scale.TYPES[&quot;Hungarian Minor&quot;]	= [ 1, .5, 1.5, .5, 1.5, .5 ];
+C.Scale.TYPES[&quot;Double Harmonic&quot;]	= [ .5, 1.5, .5, 1, .5, 1.5, .5 ];
+C.Scale.TYPES[&quot;Enigmatic&quot;]		= [ 1, 1.5, 1, 1, 1, .5, .5 ];
+C.Scale.TYPES[&quot;Japanese&quot;]		= [ .5, 1.5, 1, .5, 1, .5 ];</pre>
 </body>
 </html>

@@ -74,6 +74,54 @@ C.NOTESIoanna = [&quot;Do&quot;, &quot;Do+&quot;, &quot;Re&quot;, &quot;Re+&quot
 // function lg(a){console.log(a)}
 // Shortcut for console.log but may not work with IE!
 lg = /*console.log =*/ Function.prototype.bind.call(console.log,console);
+
+
+<span id='C-static-method-getFreq'>/**
+</span> * Get a notes frequency
+ * http://jonathan.bergknoff.com/journal/making-a-guitar-tuner-html5
+ * 
+ * F = Fo * 2^(n/12)
+ * 
+ * @param {Number} referenceFreq
+ * @param {Number} halfToneOffset
+ * @return {Number} frequency
+ * @method
+ * @static
+ */
+C.getFreq = function(referenceFreq, halfToneOffset){
+    return (referenceFreq * Math.pow(2, (halfToneOffset/12)))
+};
+
+<span id='C-method-getFreqOffset'>/**
+</span> * Calculate the distance between a note frequency and
+ * a given one. The result is in half-tone steps and can
+ * be less than 1
+ * 
+ * @param {Number} noteFreq Note frequency
+ * @param {Number} currentFreq Testing frequency
+ * @return {Number}
+ */
+C.getFreqOffset = function(noteFreq, currentFreq){
+    return 12*Math.log2(currentFreq/noteFreq)
+};
+
+<span id='C-method-getAllFreq'>/**
+</span> * Get all unique frequencies from C.Note.F along with
+ * their note names. Returns array of objects each one
+ * being {frequency: Nubmer, name: String}.
+ * 
+ * @return {Array}
+ */
+C.getAllFreq = function(){
+    var fs = [];
+    
+    for (i in C.Note.F) {
+	if (i[1]==&quot;b&quot;) continue;
+	fs.push( {frequency: C.Note.F[i], name: i});
+    };
+    
+    return fs;
+};
 </pre>
 </body>
 </html>

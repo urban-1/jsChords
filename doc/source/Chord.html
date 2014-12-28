@@ -108,7 +108,7 @@ C.Chord = C.Class.extend({
      * @private
      */
     _formulaToNote: function(f){
-	var scale = new C.Scale({root: this.options.root,type:&quot;Major&quot;})
+	var scale = new C.Scale({root: this.options.root,name:&quot;Major&quot;})
 	return scale.offset(f);
     },
     

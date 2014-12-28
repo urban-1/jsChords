@@ -25,7 +25,7 @@
 C.Scale = C.Class.extend({
     options: {
 	root: &quot;C&quot;,
-	type: &quot;Major&quot;
+	name: &quot;Major&quot;
     },
     
 <span id='C-Scale-method-initialize'>    /**
@@ -37,7 +37,34 @@ C.Scale = C.Class.extend({
     initialize: function (options) {
 	C.setOptions(this, options);
 	// Cache distances
-	this.dist = C.Scale.TYPES[this.options.type];
+	this.dist = C.Scale.TYPES[this.options.name];
+    },
+    
+<span id='C-Scale-method-toString'>    /**
+</span>     * Get string representation of this scale
+     */
+    toString: function(){
+	return this.options.root+&quot; &quot;+this.options.name;
+    },
+    
+<span id='C-Scale-method-setRoot'>    /**
+</span>     * Set the root note of the scale
+     * @param {String} root
+     */
+    setRoot: function(root){
+	this.options.root=root;
+	return this;
+    },
+    
+<span id='C-Scale-method-setName'>    /** 
+</span>     * Set/Change the scale name/type 
+     * 
+     * @param {String} name
+     */
+    setName: function(name){
+	this.options.name = name;
+	this.dist = C.Scale.TYPES[this.options.name];
+	return this;
     },
     
 <span id='C-Scale-method-offset'>    /**
@@ -79,6 +106,46 @@ C.Scale = C.Class.extend({
 	
 	var n = new C.Note({note: this.options.root,octaveOffset: oo});
 	return n.offset(off);
+    },
+    
+<span id='C-Scale-method-getNotes'>    /**
+</span>     * Return all notes on the scale
+     * 
+     * @return {Array} C.Notes
+     */
+    getNotes: function(){
+	var notes = [];
+	notes[0] = new C.Note({note: this.options.root});
+	var prevNote = new C.Note({note: this.options.root});
+	for (var i=0; i&lt;this.dist.length-1; i++){
+	    notes.push(prevNote.offset(this.dist[i]*2).clone())
+	}
+	
+	return notes;
+    },
+    
+<span id='C-Scale-method-getName'>    /**
+</span>     * Get scale's name
+     * @return {String}
+     */
+    getName: function(){
+	return this.options.name;
+    },
+    
+<span id='C-Scale-method-getRoot'>    /**
+</span>     * Get scale's root (attribute)
+     * @return {String}
+     */
+    getRoot: function(){
+	return this.options.root;
+    },
+    
+<span id='C-Scale-method-getRootNote'>    /**
+</span>     * Get scale's root (Note)
+     * @return {C.Note}
+     */
+    getRootNote: function(){
+	return new C.Note({note: this.options.root});
     }
 });
 
