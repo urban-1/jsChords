@@ -76,14 +76,25 @@ C.getFreq = function(referenceFreq, halfToneOffset){
 };
 
 /**
- * 2^(n/12) = F/Fo <=>
- * n/12 = log2(F/Fo) <=>
- * n = 12 * log2(F/Fo)
+ * Calculate the distance between a note frequency and
+ * a given one. The result is in half-tone steps and can
+ * be less than 1
+ * 
+ * @param {Number} noteFreq Note frequency
+ * @param {Number} currentFreq Testing frequency
+ * @return {Number}
  */
 C.getFreqOffset = function(noteFreq, currentFreq){
     return 12*Math.log2(currentFreq/noteFreq)
 };
 
+/**
+ * Get all unique frequencies from C.Note.F along with
+ * their note names. Returns array of objects each one
+ * being {frequency: Nubmer, name: String}.
+ * 
+ * @return {Array}
+ */
 C.getAllFreq = function(){
     var fs = [];
     

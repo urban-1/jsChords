@@ -3,6 +3,9 @@
     var test_frequencies = C.getAllFreq();
     var correlation_worker,audio;
     var data;
+    
+    
+    // Parameters (fine tuning)
     var allTimesMax =-10;
     var MSSAMPLE = 150;
     var CONFTHRES = 10;
@@ -74,30 +77,7 @@
 	    script_processor.onaudioprocess = window.capture_audio;
     }
     
-    function calcFinOctave(){
-	    var fstats = data.frequency.stats;
-	    
-	    var mLen = data.frequency.magnitudes.length;
-	    var mag = data.frequency.magnitudes;
-	    
-	    var avgFinOctave = 0;
-	    var sumMinOctave = 0;
-	    var notesLen = C.NOTES.length;
-	    var octStart = notesLen * (parseInt(fstats.maxIdx/notesLen))
-	    
-	    // Loop only for this octave! Do not calc HARMONICS 
-	    // or noise in other bandwidth ranges
-// 	    for (var f=octStart; f<octStart+notesLen; f++) {
-	    for (var f=fstats.maxIdx-2; f<fstats.maxIdx+3; f++) {
-		
-		var frequency = test_frequencies[f].frequency;
-		
-		avgFinOctave+=frequency * mag[f];
-		sumMinOctave+=mag[f];
-	    }
-	    
-	    data.frequency.stats.avgFinOctave = (avgFinOctave/sumMinOctave).toFixed(2);
-    }
+
     
     
     function interpret_correlation_result(event)
@@ -111,7 +91,7 @@
 // 	    var average = magnitudes.reduce(function(a, b) { return a + b; }, 0) / magnitudes.length;
 	    var fstats = data.frequency.stats;
 	    
-	    calcFinOctave();
+	    C.AudioUtil.calcFinOctave(2, data, test_frequencies);
 	    
 	    
 	    var confidence = fstats.max / fstats.avgM;
@@ -276,6 +256,7 @@ note_node.connect(gain_node);
 gain_node.connect(note_context.destination);
 note_node.start();
 var playing = false;
+
 function toggle_playing_note()
 {
 	lg(note_node.frequency.value)
