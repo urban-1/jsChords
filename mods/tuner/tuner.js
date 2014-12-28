@@ -4,10 +4,14 @@
     var correlation_worker,audio;
     var data;
     var allTimesMax =-10;
-    var MSSAMPLE = 100;
+    var MSSAMPLE = 150;
     var CONFTHRES = 10;
-    var SIGNALAMP = 0.05;
+    var SIGNALAMP = 0.02;
     var HALFTONEGOOD = 0.1;
+    
+    // Cache elements
+    var spot,left,right;
+    
     
     window.addEventListener("load", onLoad);
     
@@ -20,6 +24,11 @@
 	correlation_worker.addEventListener("message", interpret_correlation_result);
 	vis(C.DomUtil.get("canvasF"))
 	visAnal(C.DomUtil.get("canvasA"))
+	
+	
+	spot = C.DomUtil.get("spoton");
+	left = C.DomUtil.get("left");
+	right = C.DomUtil.get("right");
     }
     
     
@@ -78,7 +87,8 @@
 	    
 	    // Loop only for this octave! Do not calc HARMONICS 
 	    // or noise in other bandwidth ranges
-	    for (var f=octStart; f<octStart+notesLen; f++) {
+// 	    for (var f=octStart; f<octStart+notesLen; f++) {
+	    for (var f=fstats.maxIdx-2; f<fstats.maxIdx+3; f++) {
 		
 		var frequency = test_frequencies[f].frequency;
 		
@@ -86,7 +96,7 @@
 		sumMinOctave+=mag[f];
 	    }
 	    
-	    data.frequency.stats.avgFinOctave = avgFinOctave/sumMinOctave;
+	    data.frequency.stats.avgFinOctave = (avgFinOctave/sumMinOctave).toFixed(2);
     }
     
     
@@ -106,7 +116,12 @@
 	    
 	    var confidence = fstats.max / fstats.avgM;
 	    var avgF = fstats.avgFinOctave;
-// 	    if (confidence>CONFTHRES) lg(confidence,fstats.max,fstats.avgM)
+	    
+	    
+	    // Clear lights
+	    C.DomUtil.removeClass(spot, "lightGreen");
+	    C.DomUtil.removeClass(left, "lightRed");
+	    C.DomUtil.removeClass(right, "lightRed");
 	    if (confidence > CONFTHRES && data.time.stats.amp > SIGNALAMP)
 	    {
 		var dominant_frequency = test_frequencies[fstats.maxIdx];
@@ -119,18 +134,18 @@
 		
 		// FIXME: calc note spacing!
 		if (halfToneDist<=HALFTONEGOOD)
-		    document.getElementById("dir").textContent = "O";
+		    C.DomUtil.addClass(spot, "lightGreen");
 		else if (avgF<dominant_frequency.frequency) 
-		    document.getElementById("dir").textContent = "<";
+		    C.DomUtil.addClass(left, "lightRed");
 		else 
-		    document.getElementById("dir").textContent = ">";
+		    C.DomUtil.addClass(right, "lightRed");
 			
 	    }
 	    
-	    /*if (allTimesMax<fstats.max) */allTimesMax=fstats.max;
+	    allTimesMax=fstats.max;
 	    
-	    C.DomUtil.get("ddata").innerHTML = JSON.stringify(data.frequency.stats)+
-					    "<br/>"+JSON.stringify(data.time.stats);
+// 	    C.DomUtil.get("ddata").innerHTML = JSON.stringify(data.frequency.stats)+
+// 					    "<br/>"+JSON.stringify(data.time.stats);
     }
     
     

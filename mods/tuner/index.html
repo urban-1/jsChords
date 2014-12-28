@@ -2,15 +2,61 @@
 <head>
     <script type='text/javascript' src='../../jschords-src.js'></script>
     <script type='text/javascript' src='tuner.js'></script>
-<script>
-   
-</script>
+<style>
+    .arrow-right {
+	width: 0; 
+	height: 0; 
+	border-top: 10px solid transparent;
+	border-bottom: 10px solid transparent;
+	
+	border-left: 10px solid #F5A9A9;
+	display: inline-block;
+	margin: 4px;
+    }
+
+    .arrow-left {
+	width: 0; 
+	height: 0; 
+	border-top: 10px solid transparent;
+	border-bottom: 10px solid transparent; 
+	
+	border-right:10px solid #F5A9A9; 
+	display: inline-block;
+	margin: 4px;
+    }
+    
+    .arrow-left.lightRed {
+	border-right-color: red;
+    }
+    
+    .arrow-right.lightRed {
+	border-left-color: red;
+    }
+    
+    .spoton {
+	width: 18px;
+	height:18px;
+	display: inline-block;
+	border-radius: 18px;
+	background-color: #A9F5A9;
+	margin: 4px;
+    }
+    
+    .lightGreen {
+	background-color: #00FF00;
+    }
+    
+</style>
 </head>
 
 <body>
 <p>It sounds like you're playing...</p>
 <h1 id="note-name"></h1>
-<span id="dir"></span>
+<p>
+    <div class="arrow-left" id='left'></div>
+    <div class="spoton" id='spoton'></div>
+    <div class="arrow-right" id='right'></div>
+</p>
 <p>
 	<span>Note Frequency:</span>
 	<span id="frequency"></span>
