@@ -12,7 +12,7 @@
     var SIGNALAMP = 0.02;
     var HALFTONEGOOD = 0.1;
     
-    // Cache elements
+    // Cache some elements
     var spot,left,right;
     
     
@@ -25,13 +25,25 @@
 	});
 	correlation_worker = new Worker("tunerWorker.js");
 	correlation_worker.addEventListener("message", interpret_correlation_result);
-	vis(C.DomUtil.get("canvasF"))
-	visAnal(C.DomUtil.get("canvasA"))
-	
 	
 	spot = C.DomUtil.get("spoton");
 	left = C.DomUtil.get("left");
 	right = C.DomUtil.get("right");
+	
+	var qString = C.Util.getQueryString();
+	
+	var cf = C.DomUtil.get("canvasF");
+	var ca = C.DomUtil.get("canvasA");
+	
+	if (!qString.lite) {
+	    vis(cf)
+	    visAnal(ca)
+	}
+	else {
+	    cf.style.display = ca.style.display = 'none'
+	}
+	
+	
     }
     
     
