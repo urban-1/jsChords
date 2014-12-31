@@ -91,7 +91,7 @@ C.getFreqOffset = function(noteFreq, currentFreq){
 /**
  * Get all unique frequencies from C.Note.F along with
  * their note names. Returns array of objects each one
- * being {frequency: Nubmer, name: String}.
+ * being {frequency: Number, name: String}.
  * 
  * @return {Array}
  */
@@ -101,7 +101,7 @@ C.getAllFreq = function(){
     for (i in C.Note.F) {
 	if (i[1]=="b") continue;
 	fs.push( {frequency: C.Note.F[i], name: i});
-    };
+    }
     
     return fs;
 };
