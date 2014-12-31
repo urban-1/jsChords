@@ -24,11 +24,7 @@
 	    success: use_stream
 	});
 	
-	try {
-	    correlation_worker = new Worker("tunerWorker.js");
-	} catch (e){
-	    correlation_worker = new Worker("https://rawgit.com/urban-1/jsChords/master/mods/tuner/tunerWorker.js");
-	}
+	correlation_worker = new Worker("tunerWorker.js");
 	correlation_worker.addEventListener("message", interpret_correlation_result);
 	
 	spot = C.DomUtil.get("spoton");
