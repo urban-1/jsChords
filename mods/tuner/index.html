@@ -5,9 +5,16 @@
     
     <link rel="stylesheet" type="text/css" media="screen" href="tuner.css">
 
+    <script>
+    function onLoadLocal(){
+	
+	correlation_worker = new Worker("tunerWorker.js");
+	correlation_worker.addEventListener("message", interpret_correlation_result);
+    }
+    </script>
 </head>
 
-<body>
+<body onload='onLoadLocal()'>
 <p>It sounds like you're playing...</p>
 <h1 id="note-name">...</h1>
 <p>

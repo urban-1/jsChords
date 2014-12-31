@@ -24,8 +24,6 @@
 	    success: use_stream
 	});
 	
-	correlation_worker = new Worker("tunerWorker.js");
-	correlation_worker.addEventListener("message", interpret_correlation_result);
 	
 	spot = C.DomUtil.get("spoton");
 	left = C.DomUtil.get("left");
